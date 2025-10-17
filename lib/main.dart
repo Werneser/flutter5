@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'app.dart';
-import 'app_theme.dart';
-import 'bottom_nav_bar.dart';
-import 'profile_screen.dart';
-import 'service_list_screen.dart';
-import 'service_form_screen.dart';
-import 'user_service_list_screen.dart';
+import 'features/profile/screens/profile_screen.dart';
+import 'features/services/screens/service_form_screen.dart';
+import 'features/services/screens/service_list_screen.dart';
+import 'features/shared/app_theme.dart';
+import 'features/shared/widgets/bottom_nav_bar.dart';
+import 'features/user_services/screens/user_service_list_screen.dart';
+
 
 void main() {
   runApp(AppRoot());
@@ -36,7 +37,6 @@ class AppRoot extends StatelessWidget {
   }
 }
 
-/// Каркас приложения с нижней навигацией и переключением вкладок
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({super.key});
 
