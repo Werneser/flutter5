@@ -18,15 +18,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late final TextEditingController _phoneCtrl;
   late final TextEditingController _emailCtrl;
 
+  bool _initialized = false;
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_initialized) return;
+
     final profile = AppStateScope.of(context).profile;
     _nameCtrl = TextEditingController(text: profile.fullName);
     _passportCtrl = TextEditingController(text: profile.passport);
     _snilsCtrl = TextEditingController(text: profile.snils);
     _phoneCtrl = TextEditingController(text: profile.phone);
     _emailCtrl = TextEditingController(text: profile.email);
+
+    _initialized = true;
   }
 
   @override
@@ -41,6 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _save() {
     if (!_formKey.currentState!.validate()) return;
+
     final app = AppStateScope.of(context);
     app.updateProfile(app.profile.copyWith(
       fullName: _nameCtrl.text.trim(),
@@ -49,6 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       phone: _phoneCtrl.text.trim(),
       email: _emailCtrl.text.trim(),
     ));
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Профиль сохранён')),
     );
@@ -57,6 +65,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final spacing = 12.0;
+    // Если по каким-то причинам инициализация ещё не произошла, покажем запасной виджет
+    if (!_initialized) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
