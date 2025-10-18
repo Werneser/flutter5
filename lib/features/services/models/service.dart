@@ -38,14 +38,12 @@ extension ServiceCategoryX on ServiceCategory {
   }
 }
 
-/// Модель услуги из каталога
 class Service {
   final String id;
   final String title;
   final String description;
   final ServiceCategory category;
 
-  /// Дополнительные поля, требуемые конкретной услугой (дополнительно к базовым)
   final List<String> requiredFields;
 
   const Service({
