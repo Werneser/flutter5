@@ -8,13 +8,12 @@ import 'features/shared/app_theme.dart';
 import 'features/shared/widgets/bottom_nav_bar.dart';
 import 'features/user_services/screens/user_service_list_screen.dart';
 
-
 void main() {
   runApp(AppRoot());
 }
 
 class AppRoot extends StatelessWidget {
-  AppRoot({super.key});
+  AppRoot({Key? key}) : super(key: key);
 
   final AppState _appState = AppState.initial();
 
@@ -38,36 +37,51 @@ class AppRoot extends StatelessWidget {
 }
 
 class HomeScaffold extends StatelessWidget {
-  const HomeScaffold({super.key});
+  const HomeScaffold({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
 
-    Widget body;
-    switch (appState.currentTabIndex) {
-      case 0:
-        body = const ServiceListScreen();
-        break;
-      case 1:
-        body = const UserServiceListScreen();
-        break;
-      case 2:
-      default:
-        body = const ProfileScreen();
-        break;
-    }
+    return AnimatedBuilder(
+      animation: appState,
+      builder: (context, child) {
+        Widget body;
+        switch (appState.currentTabIndex) {
+          case 0:
+            body = const ServiceListScreen();
+            break;
+          case 1:
+            body = const UserServiceListScreen();
+            break;
+          case 2:
+          default:
+            body = const ProfileScreen();
+            break;
+        }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Госуслуги'),
-        centerTitle: true,
-      ),
-      body: body,
-      bottomNavigationBar: AppBottomNavBar(
-        currentIndex: appState.currentTabIndex,
-        onTap: appState.setTab,
-      ),
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Госуслуги'),
+            centerTitle: true,
+          ),
+          body: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              final offsetAnimation = Tween<Offset>(
+                begin: const Offset(1.0, 0.0),
+                end: Offset.zero,
+              ).animate(animation);
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
+            child: body,
+          ),
+          bottomNavigationBar: AppBottomNavBar(
+            currentIndex: appState.currentTabIndex,
+            onTap: appState.setTab,
+          ),
+        );
+      },
     );
   }
 }
