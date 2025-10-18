@@ -37,7 +37,6 @@ class UserProfile {
   }
 }
 
-/// Глобальное состояние приложения
 class AppState extends ChangeNotifier {
   int currentTabIndex;
   List<Service> catalog;
