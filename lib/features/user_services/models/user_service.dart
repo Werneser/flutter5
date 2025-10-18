@@ -27,7 +27,6 @@ extension UserServiceStatusX on UserServiceStatus {
   }
 }
 
-/// Модель заявления пользователя на конкретную услугу
 class UserService {
   final String id;
   final Service service;
