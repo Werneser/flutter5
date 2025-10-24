@@ -14,12 +14,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   List<String> _imageUrls = const [
-    'https://images.unsplash.com/photo-1517816428104-797678c7cf0d?q=80&w=1080&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1080&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1080&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?q=80&w=1080&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1080&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1080&auto=format&fit=crop',
+    'https://proverk.ru/uploads/images/proverka-snils-1723130846.jpg',
+    'https://s.kdelo.ru/images/Karina_Pics/passport_min.png',
+    'https://static.tildacdn.com/tild3761-6439-4931-b835-353531616233/610067_47fb143b6eebd.jpg',
+    'https://blogkadrovika.ru/wp-content/uploads/%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0-%D1%81-%D0%BC%D0%B5%D1%81%D1%82%D0%B0-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%8B.png',
+    'https://upload.wikimedia.org/wikipedia/commons/9/92/%D0%9F%D0%BE%D0%BB%D0%B8%D1%81_%D0%9E%D0%9C%D0%A1_%D0%A0%D0%A4.jpeg',
   ];
 
   bool _prefetched = false;
@@ -81,6 +80,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
+
+
       body: RefreshIndicator(
         onRefresh: _prefetchImages,
         child: SingleChildScrollView(
