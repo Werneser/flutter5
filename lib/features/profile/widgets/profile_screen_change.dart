@@ -1,35 +1,23 @@
-// profile_screen_change.dart
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-// См. комментарий в profile_screen.dart — ожидается совместимый AppState.
-abstract class AppState extends ChangeNotifier {
-  String? get fullName;
-  String? get email;
-  String? get phone;
-  String? get bio;
-
-  void updateProfile({
-    String? fullName,
-    String? email,
-    String? phone,
-    String? bio,
-  });
-}
+import '../../../app.dart';
 
 class ProfileScreenChange extends StatefulWidget {
   const ProfileScreenChange({
     super.key,
     required this.initialFullName,
-    required this.initialEmail,
+    required this.initialPassport,
+    required this.initialSnils,
     required this.initialPhone,
-    required this.initialBio,
+    required this.initialEmail,
   });
 
   final String initialFullName;
-  final String initialEmail;
+  final String initialPassport;
+  final String initialSnils;
   final String initialPhone;
-  final String initialBio;
+  final String initialEmail;
 
   @override
   State<ProfileScreenChange> createState() => _ProfileScreenChangeState();
@@ -39,9 +27,10 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _nameCtrl;
-  late final TextEditingController _emailCtrl;
+  late final TextEditingController _passportCtrl;
+  late final TextEditingController _snilsCtrl;
   late final TextEditingController _phoneCtrl;
-  late final TextEditingController _bioCtrl;
+  late final TextEditingController _emailCtrl;
 
   bool _saving = false;
 
@@ -49,17 +38,19 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
   void initState() {
     super.initState();
     _nameCtrl = TextEditingController(text: widget.initialFullName);
-    _emailCtrl = TextEditingController(text: widget.initialEmail);
+    _passportCtrl = TextEditingController(text: widget.initialPassport);
+    _snilsCtrl = TextEditingController(text: widget.initialSnils);
     _phoneCtrl = TextEditingController(text: widget.initialPhone);
-    _bioCtrl = TextEditingController(text: widget.initialBio);
+    _emailCtrl = TextEditingController(text: widget.initialEmail);
   }
 
   @override
   void dispose() {
     _nameCtrl.dispose();
-    _emailCtrl.dispose();
+    _passportCtrl.dispose();
+    _snilsCtrl.dispose();
     _phoneCtrl.dispose();
-    _bioCtrl.dispose();
+    _emailCtrl.dispose();
     super.dispose();
   }
 
@@ -68,16 +59,19 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
 
     setState(() => _saving = true);
     try {
-      final appState = context.read<AppState>();
-      appState.updateProfile(
+      final appState = AppStateScope.of(context);
+      final current = appState.profile;
+
+      final updated = current.copyWith(
         fullName: _nameCtrl.text.trim(),
-        email: _emailCtrl.text.trim(),
+        passport: _passportCtrl.text.trim(),
+        snils: _snilsCtrl.text.trim(),
         phone: _phoneCtrl.text.trim(),
-        bio: _bioCtrl.text.trim(),
+        email: _emailCtrl.text.trim(),
       );
-      if (mounted) {
-        Navigator.of(context).pop(true); // Сообщаем, что обновили
-      }
+
+      appState.updateProfile(updated);
+      if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -91,9 +85,7 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Изменить профиль'),
-      ),
+      appBar: AppBar(title: const Text('Изменить профиль')),
       body: SafeArea(
         child: AbsorbPointer(
           absorbing: _saving,
@@ -112,31 +104,26 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
                           prefixIcon: Icon(Icons.person),
                         ),
                         textInputAction: TextInputAction.next,
-                        validator: (v) {
-                          if (v == null || v.trim().isEmpty) {
-                            return 'Укажите имя';
-                          }
-                          return null;
-                        },
+                        validator: (v) =>
+                        (v == null || v.trim().isEmpty) ? 'Укажите имя' : null,
                       ),
                       const SizedBox(height: 12),
                       TextFormField(
-                        controller: _emailCtrl,
+                        controller: _passportCtrl,
                         decoration: const InputDecoration(
-                          labelText: 'E-mail',
-                          prefixIcon: Icon(Icons.email),
+                          labelText: 'Паспорт (серия и номер)',
+                          prefixIcon: Icon(Icons.badge),
                         ),
-                        keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        validator: (v) {
-                          final value = v?.trim() ?? '';
-                          if (value.isEmpty) return 'Укажите e-mail';
-                          final emailRegex = RegExp(r'^[\w\.\-]+@[\w\.\-]+\.\w+$');
-                          if (!emailRegex.hasMatch(value)) {
-                            return 'Некорректный e-mail';
-                          }
-                          return null;
-                        },
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _snilsCtrl,
+                        decoration: const InputDecoration(
+                          labelText: 'СНИЛС',
+                          prefixIcon: Icon(Icons.credit_card),
+                        ),
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(height: 12),
                       TextFormField(
@@ -147,25 +134,23 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
                         ),
                         keyboardType: TextInputType.phone,
                         textInputAction: TextInputAction.next,
-                        validator: (v) {
-                          final value = v?.trim() ?? '';
-                          if (value.isEmpty) return null; // телефон опционален
-                          final phoneRegex = RegExp(r'^[0-9\+\-\s\(\)]{6,}$');
-                          if (!phoneRegex.hasMatch(value)) {
-                            return 'Некорректный телефон';
-                          }
-                          return null;
-                        },
                       ),
                       const SizedBox(height: 12),
                       TextFormField(
-                        controller: _bioCtrl,
+                        controller: _emailCtrl,
                         decoration: const InputDecoration(
-                          labelText: 'О себе',
-                          prefixIcon: Icon(Icons.info_outline),
+                          labelText: 'E-mail',
+                          prefixIcon: Icon(Icons.email),
                         ),
-                        textInputAction: TextInputAction.newline,
-                        maxLines: 4,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.done,
+                        validator: (v) {
+                          final value = v?.trim() ?? '';
+                          if (value.isEmpty) return 'Укажите e-mail';
+                          final re = RegExp(r'^[\w.\-]+@[\w.\-]+\.\w+$');
+                          return re.hasMatch(value) ? null : 'Некорректный e-mail';
+                        },
+                        onFieldSubmitted: (_) => _save(),
                       ),
                       const SizedBox(height: 24),
                       SizedBox(
@@ -184,9 +169,7 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
                 const Positioned.fill(
                   child: ColoredBox(
                     color: Color(0x33000000),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: Center(child: CircularProgressIndicator()),
                   ),
                 ),
             ],
