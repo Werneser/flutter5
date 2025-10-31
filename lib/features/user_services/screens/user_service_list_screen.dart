@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../app.dart';
+
 import '../models/user_service.dart';
 import '../widgets/user_service_list_view.dart';
+import 'status_change_screen.dart'; // новая страница для изменения статуса
 
 class UserServiceListScreen extends StatefulWidget {
   const UserServiceListScreen({super.key});
@@ -40,6 +42,20 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
                     userServiceId: id,
                     status: newStatus,
                   );
+                },
+                onTapChangeStatus: (service) async {
+                  // Переходим на страницу изменения статуса и возвращаем результат
+                  final result = await Navigator.of(context).push<UserServiceStatus?>(
+                    MaterialPageRoute(
+                      builder: (_) => StatusChangeScreen(service: service),
+                    ),
+                  );
+                  if (result != null) {
+                    app.updateUserServiceStatus(
+                      userServiceId: service.id,
+                      status: result,
+                    );
+                  }
                 },
               ),
             ),
