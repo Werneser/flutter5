@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../app.dart';
-import '../widgets/profile_screen_change.dart';
+import 'profile_screen_change.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
