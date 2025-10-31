@@ -19,30 +19,36 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
     final app = AppStateScope.of(context);
     final items = app.userServicesByStatus(_status);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 8),
-        _StatusFilter(
-          selected: _status,
-          onSelected: (st) => setState(() => _status = st),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Мои заявки')),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            _StatusFilter(
+              selected: _status,
+              onSelected: (st) => setState(() => _status = st),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: UserServiceListView(
+                items: items,
+                onChangeStatus: (id, newStatus) {
+                  app.updateUserServiceStatus(
+                    userServiceId: id,
+                    status: newStatus,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
-        const Divider(height: 1),
-        Expanded(
-          child: UserServiceListView(
-            items: items,
-            onChangeStatus: (id, newStatus) {
-              app.updateUserServiceStatus(
-                userServiceId: id,
-                status: newStatus,
-              );
-            },
-          ),
-        ),
-      ],
+      ),
     );
   }
-}
+
 
 class _StatusFilter extends StatelessWidget {
   final UserServiceStatus? selected;
@@ -56,6 +62,7 @@ class _StatusFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statuses = [null, ...UserServiceStatus.values];
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
