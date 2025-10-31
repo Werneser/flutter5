@@ -34,8 +34,6 @@ class StatusChangeScreen extends StatelessWidget {
                     status: st,
                     isSelected: st == current,
                     onSelected: () {
-                      // По выбору твой статус обновляем в приложении через родителя
-                      // Здесь просто возвращаем результат назад
                       Navigator.of(context).pop(st);
                     },
                   ),

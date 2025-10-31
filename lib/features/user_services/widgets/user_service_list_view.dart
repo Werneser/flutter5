@@ -73,7 +73,6 @@ class UserServiceListView extends StatelessWidget {
       builder: (context) {
         return SafeArea(
           child: SizedBox(
-            // ограничиваем высоту BotttomSheet, чтобы не было переполнения
             height: MediaQuery
                 .of(context)
                 .size
