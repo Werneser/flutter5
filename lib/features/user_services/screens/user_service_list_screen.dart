@@ -48,7 +48,7 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
       ),
     );
   }
-
+}
 
 class _StatusFilter extends StatelessWidget {
   final UserServiceStatus? selected;
