@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../app.dart';
+import 'profile_screen.dart'; // убедитесь, что путь верный и этот файл доступен
 
 class ProfileScreenChange extends StatefulWidget {
   const ProfileScreenChange({
@@ -70,8 +70,18 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
         email: _emailCtrl.text.trim(),
       );
 
+      // Обновляем глобальное состояние
       appState.updateProfile(updated);
-      if (mounted) Navigator.of(context).pop(true);
+
+      // Переходим на ProfileScreen с новыми данными
+      if (mounted) {
+        // Замена текущего маршрута на ProfileScreen
+        await Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => ProfileScreen(),
+          ),
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

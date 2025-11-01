@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../app.dart';
 
 import '../../services/screens/service_list_screen.dart';
+
 import 'about_screen.dart';
 import 'profile_screen_change.dart';
 import 'about_govservices_screen.dart';
@@ -47,17 +48,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _openEditScreen() async {
     final appState = AppStateScope.of(context);
     final p = appState.profile;
-    final updated = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => ProfileScreenChange(
+
+    final updated = await Navigator.of(context).pushReplacement<bool, bool>(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => ProfileScreenChange(
           initialFullName: p.fullName,
           initialPassport: p.passport,
           initialSnils: p.snils,
           initialPhone: p.phone,
           initialEmail: p.email,
         ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          return SlideTransition(position: animation.drive(tween), child: child);
+        },
       ),
     );
+
     if (updated == true && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Профиль обновлён')),
@@ -192,10 +203,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       placeholder: (context, _) => Container(
                         color: Colors.grey.shade200,
                         child: const Center(
-                          child: SizedBox(
-                            width: 20, height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
+                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                         ),
                       ),
                       errorWidget: (context, _, __) => Container(
@@ -222,5 +230,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-
