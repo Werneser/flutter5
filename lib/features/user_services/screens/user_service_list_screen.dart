@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app.dart';
-import '../../profile/screens/profile_screen.dart';
 import '../models/user_service.dart';
 import '../widgets/user_service_list_view.dart';
-import 'status_change_screen.dart';
-import 'user_service_detail_screen.dart';
 
 class UserServiceListScreen extends StatefulWidget {
   const UserServiceListScreen({super.key});
