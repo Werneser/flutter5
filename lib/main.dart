@@ -3,9 +3,13 @@ import 'package:flutter5/features/user_services/screens/user_service_list_screen
 import 'package:go_router/go_router.dart';
 
 import 'app.dart';
+import 'features/profile/screens/AboutScreen.dart';
+import 'features/profile/screens/about_govservices_screen.dart';
 import 'features/profile/screens/profile_screen.dart';
+import 'features/profile/screens/profile_screen_change.dart';
 import 'features/services/models/service.dart';
 import 'features/services/screens/service_form_screen.dart';
+import 'features/services/screens/service_list_screen.dart';
 import 'features/shared/HomeScaffold.dart';
 import 'features/shared/app_theme.dart';
 import 'features/services/screens/search_service_screen.dart';
@@ -30,6 +34,10 @@ class AppRoot extends StatelessWidget {
         GoRoute(
           path: '/',
           builder: (context, state) => HomeScaffold(),
+        ),
+        GoRoute(
+          path: '/ServiceList',
+          builder: (context, state) => ServiceListScreen(),
         ),
         GoRoute(
           path: '/userServiceList',
@@ -58,8 +66,27 @@ class AppRoot extends StatelessWidget {
         ),
         GoRoute(
           path: '/profile',
-          name: 'profile',
           pageBuilder: (context, state) => const MaterialPage(child: ProfileScreen()),
+        ),
+        GoRoute(
+          path: '/profile/edit',
+          pageBuilder: (context, state) => MaterialPage(
+            child: ProfileScreenChange(
+              initialFullName: state.extra != null ? (state.extra as Map)['fullName'] : '',
+              initialPassport: state.extra != null ? (state.extra as Map)['passport'] : '',
+              initialSnils: state.extra != null ? (state.extra as Map)['snils'] : '',
+              initialPhone: state.extra != null ? (state.extra as Map)['phone'] : '',
+              initialEmail: state.extra != null ? (state.extra as Map)['email'] : '',
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '/about',
+          pageBuilder: (context, state) => const MaterialPage(child: AboutScreen()),
+        ),
+        GoRoute(
+          path: '/govads',
+          pageBuilder: (context, state) => const MaterialPage(child: GovAdsScreen()),
         ),
       ],
     );
