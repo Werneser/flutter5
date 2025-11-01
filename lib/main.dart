@@ -3,6 +3,7 @@ import 'package:flutter5/features/user_services/screens/user_service_list_screen
 import 'package:go_router/go_router.dart';
 
 import 'app.dart';
+import 'features/profile/screens/profile_screen.dart';
 import 'features/services/models/service.dart';
 import 'features/services/screens/service_form_screen.dart';
 import 'features/shared/HomeScaffold.dart';
@@ -54,6 +55,11 @@ class AppRoot extends StatelessWidget {
             final service = state.extra as Service?;
             return ServiceFormScreen(service: service);
           },
+        ),
+        GoRoute(
+          path: '/profile',
+          name: 'profile',
+          pageBuilder: (context, state) => const MaterialPage(child: ProfileScreen()),
         ),
       ],
     );
