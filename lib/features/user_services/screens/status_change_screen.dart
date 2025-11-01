@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../app.dart';
 import '../models/user_service.dart';
 
 class StatusChangeScreen extends StatelessWidget {
   final UserService service;
-
   const StatusChangeScreen({super.key, required this.service});
 
   @override
   Widget build(BuildContext context) {
-
     final current = service.status;
-
     final statuses = UserServiceStatus.values;
 
     return Scaffold(
@@ -34,6 +32,7 @@ class StatusChangeScreen extends StatelessWidget {
                     status: st,
                     isSelected: st == current,
                     onSelected: () {
+                      // возвращаем выбранный статус экрану-родителю
                       Navigator.of(context).pop(st);
                     },
                   ),
