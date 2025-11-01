@@ -27,9 +27,9 @@ class ServiceDetailScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(service.description),
             const SizedBox(height: 16),
-            Text('Класс: ${service.category.label}'), // если есть
+            Text('Класс: ${service.category.label}'),
             const SizedBox(height: 12),
-            Text('Заявка: ${userService.appliedAt.toLocal()}'), // формат можно улучшить
+            Text('Заявка: ${userService.appliedAt.toLocal()}'),
             const SizedBox(height: 12),
             Text('Статус: ${userService.status.label}'),
             const SizedBox(height: 12),
