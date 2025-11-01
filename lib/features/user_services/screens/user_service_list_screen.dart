@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app.dart';
 
+import '../../profile/screens/profile_screen.dart';
 import '../models/user_service.dart';
 import '../widgets/user_service_list_view.dart';
 import 'status_change_screen.dart';
@@ -16,13 +17,35 @@ class UserServiceListScreen extends StatefulWidget {
 class _UserServiceListScreenState extends State<UserServiceListScreen> {
   UserServiceStatus? _status;
 
+  void _goToProfile() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => const ProfileScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final app = AppStateScope.of(context);
     final items = app.userServicesByStatus(_status);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Мои заявки')),
+      appBar: AppBar(
+        title: const Text('Мои заявки'),
+        actions: [
+          IconButton(
+            tooltip: 'Профиль',
+            icon: const Icon(Icons.person),
+            onPressed: _goToProfile,
+          ),
+          IconButton(
+            tooltip: 'Изменить статус',
+            icon: const Icon(Icons.list_alt),
+            onPressed: null,
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
@@ -49,6 +72,7 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
                       builder: (_) => StatusChangeScreen(service: service),
                     ),
                   );
+
                   if (result != null) {
                     app.updateUserServiceStatus(
                       userServiceId: service.id,
