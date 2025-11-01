@@ -44,6 +44,10 @@ class AppRoot extends StatelessWidget {
           builder: (context, state) => const UserServiceListScreen(),
         ),
         GoRoute(
+          path: '/searchService',
+          builder: (context, state) => SearchServiceScreen(),
+        ),
+        GoRoute(
           path: '/serviceDetail',
           builder: (context, state) {
             final service = state.extra as UserService;

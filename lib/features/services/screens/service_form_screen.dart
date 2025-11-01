@@ -12,7 +12,6 @@ class ServiceFormScreen extends StatefulWidget {
 }
 
 class _ServiceFormScreenState extends State<ServiceFormScreen> {
-  // как ранее
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {};
   Service? _service;
