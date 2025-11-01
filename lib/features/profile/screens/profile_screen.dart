@@ -7,7 +7,7 @@ import '../../../app.dart';
 import '../../services/screens/service_list_screen.dart';
 import 'AboutScreen.dart';
 import 'profile_screen_change.dart';
-import 'exit_screen.dart';
+import 'about_govservices_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -77,9 +77,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _navigateToExitScreen() {
+  void _navigateToGovAdsScreen() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const ExitScreen()),
+      MaterialPageRoute(builder: (_) => const GovAdsScreen()),
     );
   }
 
@@ -108,9 +108,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: _navigateToServiceListScreen,
           ),
           IconButton(
-            tooltip: 'Выход',
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: _navigateToExitScreen,
+            tooltip: 'Реклама госуслуг',
+            icon: const Icon(Icons.campaign),
+            onPressed: _navigateToGovAdsScreen,
           ),
         ],
       ),
