@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class SearchServiceScreen extends StatefulWidget {
   const SearchServiceScreen({super.key, this.initialQuery = ''});
-
   final String initialQuery;
 
   @override
@@ -25,6 +24,9 @@ class _SearchServiceScreenState extends State<SearchServiceScreen> {
   }
 
   void _apply() {
+    // Вернуть результат через pop как раньше, если вы используете обычный Navigator
+    // Но для GoRouter можно сделать: GoRouter.of(context).pop(_controller.text);
+    // Здесь оставим как локальную реализацию:
     Navigator.of(context).pop(_controller.text);
   }
 
