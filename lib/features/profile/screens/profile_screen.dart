@@ -64,15 +64,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
   }
-
   void _navigateToAboutScreen() {
     GoRouter.of(context).go('/about');
   }
-
   void _navigateToServiceListScreen() {
     GoRouter.of(context).go('/ServiceList');
   }
-
   void _navigateToGovAdsScreen() {
     GoRouter.of(context).go('/govads');
   }
