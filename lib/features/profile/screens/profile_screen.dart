@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../app.dart';
 
 import '../../services/screens/service_list_screen.dart';
-import 'AboutScreen.dart';
+import 'aboutScreen.dart';
 import 'profile_screen_change.dart';
 import 'about_govservices_screen.dart';
 
