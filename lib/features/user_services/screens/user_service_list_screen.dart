@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter5/features/user_services/screens/user_service_detail_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app.dart';
-
 import '../../profile/screens/profile_screen.dart';
-
 import '../models/user_service.dart';
 import '../widgets/user_service_list_view.dart';
 import 'status_change_screen.dart';
+import 'user_service_detail_screen.dart';
 
 class UserServiceListScreen extends StatefulWidget {
   const UserServiceListScreen({super.key});
@@ -21,16 +19,13 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
   UserServiceStatus? _status;
 
   void _goToProfile() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const ProfileScreen()),
-    );
+    GoRouter.of(context).go('/profile');
   }
 
   void _openStatusChangeFor(UserService service) {
-    Navigator.of(context).push<UserServiceStatus?>(
-      MaterialPageRoute(
-        builder: (_) => StatusChangeScreen(service: service),
-      ),
+    GoRouter.of(context).push<UserServiceStatus?>(
+      '/statusChange',
+      extra: service,
     ).then((result) {
       if (result != null) {
         final app = AppStateScope.of(context);
@@ -72,12 +67,10 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
             Expanded(
               child: UserServiceListView(
                 items: items,
-
                 onTapChangeStatus: (service) async {
-                  final result = await Navigator.of(context).push<UserServiceStatus?>(
-                    MaterialPageRoute(
-                      builder: (_) => StatusChangeScreen(service: service),
-                    ),
+                  final result = await GoRouter.of(context).push<UserServiceStatus?>(
+                    '/statusChange',
+                    extra: service,
                   );
                   if (result != null) {
                     app.updateUserServiceStatus(
@@ -87,15 +80,15 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
                   }
                 },
                 onTap: (service) async {
-                  await Navigator.of(context).push<void>(
-                    MaterialPageRoute(
-                      builder: (_) => ServiceDetailScreen(userService: service),
-                    ),
+                  await GoRouter.of(context).push<void>(
+                    '/serviceDetail',
+                    extra: service,
                   );
                 },
                 onSecondaryTap: (service) {
                   _openStatusChangeFor(service);
-                }, onChangeStatus: (String value) {  },
+                },
+                onChangeStatus: (String value) {},
               ),
             ),
           ],
@@ -117,7 +110,6 @@ class _StatusFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statuses = [null, ...UserServiceStatus.values];
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
