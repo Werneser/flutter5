@@ -3,9 +3,15 @@ import 'package:flutter/material.dart';
 import '../../../app.dart';
 
 import '../../user_services/screens/user_service_list_screen.dart';
+
 import '../models/service.dart';
+
 import '../widgets/service_catalogs.dart';
+
 import '../widgets/service_list_view.dart';
+
+// Новый импорт для экрана поиска
+import 'search_service_screen.dart';
 
 class ServiceListScreen extends StatefulWidget {
   const ServiceListScreen({super.key});
@@ -26,6 +32,17 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     );
   }
 
+  Future<void> _openSearchPage() async {
+    final result = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => SearchServiceScreen(initialQuery: _query),
+      ),
+    );
+    if (result != null) {
+      setState(() => _query = result);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final app = AppStateScope.of(context);
@@ -36,6 +53,11 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
         title: const Text('Услуги'),
         actions: [
           IconButton(
+            tooltip: 'Поиск услуг',
+            icon: const Icon(Icons.search),
+            onPressed: _openSearchPage,
+          ),
+          IconButton(
             tooltip: 'Мои заявки',
             icon: const Icon(Icons.list_alt),
             onPressed: _goToUserServiceList,
@@ -44,16 +66,6 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Поиск услуги...',
-                prefixIcon: Icon(Icons.search),
-              ),
-              onChanged: (v) => setState(() => _query = v),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: ServiceCatalogs(

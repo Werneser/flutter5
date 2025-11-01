@@ -16,7 +16,6 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
 
   Service? _service;
 
-  // Базовые поля для любой услуги
   static const List<String> _baseFields = [
     'ФИО',
     'Паспорт (серия и номер)',
