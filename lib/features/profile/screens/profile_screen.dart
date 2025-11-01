@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app.dart';
 
@@ -47,16 +48,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _openEditScreen() async {
     final appState = AppStateScope.of(context);
     final p = appState.profile;
-    final updated = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => ProfileScreenChange(
-          initialFullName: p.fullName,
-          initialPassport: p.passport,
-          initialSnils: p.snils,
-          initialPhone: p.phone,
-          initialEmail: p.email,
-        ),
-      ),
+    final updated = await GoRouter.of(context).push<bool>(
+      '/profile/edit',
+      extra: {
+        'fullName': p.fullName,
+        'passport': p.passport,
+        'snils': p.snils,
+        'phone': p.phone,
+        'email': p.email,
+      },
     );
     if (updated == true && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -66,21 +66,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _navigateToAboutScreen() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const AboutScreen()),
-    );
+    GoRouter.of(context).go('/about');
   }
 
   void _navigateToServiceListScreen() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const ServiceListScreen()),
-    );
+    GoRouter.of(context).go('/ServiceList');
   }
 
   void _navigateToGovAdsScreen() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const GovAdsScreen()),
-    );
+    GoRouter.of(context).go('/govads');
   }
 
   @override
