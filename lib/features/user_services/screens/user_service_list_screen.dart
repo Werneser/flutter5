@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter5/features/user_services/screens/user_service_detail_screen.dart';
+
 import '../../../app.dart';
 
 import '../../profile/screens/profile_screen.dart';
+
 import '../models/user_service.dart';
 import '../widgets/user_service_list_view.dart';
 import 'status_change_screen.dart';
@@ -19,10 +22,24 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
 
   void _goToProfile() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const ProfileScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const ProfileScreen()),
     );
+  }
+
+  void _openStatusChangeFor(UserService service) {
+    Navigator.of(context).push<UserServiceStatus?>(
+      MaterialPageRoute(
+        builder: (_) => StatusChangeScreen(service: service),
+      ),
+    ).then((result) {
+      if (result != null) {
+        final app = AppStateScope.of(context);
+        app.updateUserServiceStatus(
+          userServiceId: service.id,
+          status: result,
+        );
+      }
+    });
   }
 
   @override
@@ -38,11 +55,6 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
             tooltip: 'Профиль',
             icon: const Icon(Icons.person),
             onPressed: _goToProfile,
-          ),
-          IconButton(
-            tooltip: 'Изменить статус',
-            icon: const Icon(Icons.list_alt),
-            onPressed: null,
           ),
         ],
       ),
@@ -60,19 +72,13 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
             Expanded(
               child: UserServiceListView(
                 items: items,
-                onChangeStatus: (id, newStatus) {
-                  app.updateUserServiceStatus(
-                    userServiceId: id,
-                    status: newStatus,
-                  );
-                },
+
                 onTapChangeStatus: (service) async {
                   final result = await Navigator.of(context).push<UserServiceStatus?>(
                     MaterialPageRoute(
                       builder: (_) => StatusChangeScreen(service: service),
                     ),
                   );
-
                   if (result != null) {
                     app.updateUserServiceStatus(
                       userServiceId: service.id,
@@ -80,6 +86,16 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
                     );
                   }
                 },
+                onTap: (service) async {
+                  await Navigator.of(context).push<void>(
+                    MaterialPageRoute(
+                      builder: (_) => ServiceDetailScreen(userService: service),
+                    ),
+                  );
+                },
+                onSecondaryTap: (service) {
+                  _openStatusChangeFor(service);
+                }, onChangeStatus: (String value) {  },
               ),
             ),
           ],
