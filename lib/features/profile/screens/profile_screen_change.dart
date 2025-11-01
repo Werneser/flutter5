@@ -70,12 +70,9 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
         email: _emailCtrl.text.trim(),
       );
 
-      // Обновляем глобальное состояние
       appState.updateProfile(updated);
 
-      // Переходим на ProfileScreen с новыми данными
       if (mounted) {
-        // Замена текущего маршрута на ProfileScreen
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (_) => ProfileScreen(),
