@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app.dart';
-
 import '../../user_services/screens/user_service_list_screen.dart';
-
 import '../models/service.dart';
-
 import '../widgets/service_catalogs.dart';
-
 import '../widgets/service_list_view.dart';
 
-import 'search_service_screen.dart';
 
 class ServiceListScreen extends StatefulWidget {
   const ServiceListScreen({super.key});
@@ -24,18 +20,13 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
   String _query = '';
 
   void _goToUserServiceList() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const UserServiceListScreen(),
-      ),
-    );
+    GoRouter.of(context).go('/userServiceList');
   }
 
   Future<void> _openSearchPage() async {
-    final result = await Navigator.of(context).push<String>(
-      MaterialPageRoute(
-        builder: (_) => SearchServiceScreen(initialQuery: _query),
-      ),
+    final result = await GoRouter.of(context).push<String>(
+      '/searchService',
+      extra: _query,
     );
     if (result != null) {
       setState(() => _query = result);
@@ -77,10 +68,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             child: ServiceListView(
               services: services,
               onTap: (service) {
-                Navigator.of(context).pushNamed(
-                  '/serviceForm',
-                  arguments: service,
-                );
+                GoRouter.of(context).push('/serviceForm', extra: service);
               },
             ),
           ),
