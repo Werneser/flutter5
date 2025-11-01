@@ -1,8 +1,11 @@
-// profile_screen.dart
 import 'package:flutter/material.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../app.dart';
+
+import '../../services/screens/service_list_screen.dart';
+import 'AboutScreen.dart';
 import 'profile_screen_change.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -43,7 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _openEditScreen() async {
     final appState = AppStateScope.of(context);
     final p = appState.profile;
-
     final updated = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => ProfileScreenChange(
@@ -55,7 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
-
     if (updated == true && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Профиль обновлён')),
@@ -63,6 +64,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _navigateToAboutScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const AboutScreen()),
+    );
+  }
+
+  void _navigateToServiceListScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const ServiceListScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +90,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: const Icon(Icons.edit),
             onPressed: _openEditScreen,
           ),
+          IconButton(
+            tooltip: 'О приложении',
+            icon: const Icon(Icons.info_outline_rounded),
+            onPressed: _navigateToAboutScreen,
+          ),
+          IconButton(
+            tooltip: 'К списку услуг',
+            icon: const Icon(Icons.list_alt),
+            onPressed: _navigateToServiceListScreen,
+          ),
         ],
       ),
-
-
       body: RefreshIndicator(
         onRefresh: _prefetchImages,
         child: SingleChildScrollView(
@@ -92,7 +112,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text('Информация', style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
-
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.person),
@@ -128,7 +147,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   subtitle: const Text('Электронная почта'),
                 ),
               ),
-
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -142,7 +160,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               const SizedBox(height: 8),
-
               GridView.builder(
                 shrinkWrap: true,
                 itemCount: _imageUrls.length,
@@ -175,13 +192,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Icon(Icons.broken_image, color: Colors.grey),
                         ),
                       ),
-                      // Доп. тюнинг (опционально):
                       fadeInDuration: const Duration(milliseconds: 200),
                     ),
                   );
                 },
               ),
-
               const SizedBox(height: 24),
               Text(
                 'Подсказка: при первом открытии онлайн изображения кэшируются. '
@@ -195,4 +210,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+
 
