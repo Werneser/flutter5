@@ -7,6 +7,7 @@ import '../../../app.dart';
 import '../../services/screens/service_list_screen.dart';
 import 'AboutScreen.dart';
 import 'profile_screen_change.dart';
+import 'exit_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -76,6 +77,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _navigateToExitScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const ExitScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
@@ -99,6 +106,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             tooltip: 'К списку услуг',
             icon: const Icon(Icons.list_alt),
             onPressed: _navigateToServiceListScreen,
+          ),
+          IconButton(
+            tooltip: 'Выход',
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: _navigateToExitScreen,
           ),
         ],
       ),
