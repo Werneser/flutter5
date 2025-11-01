@@ -10,7 +10,6 @@ import '../widgets/service_catalogs.dart';
 
 import '../widgets/service_list_view.dart';
 
-// Новый импорт для экрана поиска
 import 'search_service_screen.dart';
 
 class ServiceListScreen extends StatefulWidget {

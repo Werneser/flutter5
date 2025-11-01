@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'app.dart';
-import 'features/profile/screens/profile_screen.dart';
+import 'features/profile/screens/profile_screen.dart' hide ServiceListScreen;
 import 'features/services/screens/service_form_screen.dart';
 import 'features/services/screens/service_list_screen.dart';
 import 'features/shared/app_theme.dart';
@@ -11,12 +10,9 @@ import 'features/user_services/screens/user_service_list_screen.dart';
 void main() {
   runApp(AppRoot());
 }
-
 class AppRoot extends StatelessWidget {
   AppRoot({Key? key}) : super(key: key);
-
   final AppState _appState = AppState.initial();
-
   @override
   Widget build(BuildContext context) {
     return AppStateScope(
@@ -35,10 +31,8 @@ class AppRoot extends StatelessWidget {
     );
   }
 }
-
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
