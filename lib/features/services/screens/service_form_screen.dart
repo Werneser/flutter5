@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../app.dart';
-import '../models/service.dart';
 
+import '../../../app.dart';
+
+import '../models/service.dart';
+import 'package:get_it/get_it.dart';
 
 class ServiceFormScreen extends StatefulWidget {
   const ServiceFormScreen({super.key});
@@ -13,7 +15,6 @@ class ServiceFormScreen extends StatefulWidget {
 class _ServiceFormScreenState extends State<ServiceFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {};
-
   Service? _service;
 
   static const List<String> _baseFields = [
@@ -29,10 +30,12 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
     super.didChangeDependencies();
     _service ??=
     ModalRoute.of(context)?.settings.arguments as Service?;
+
     final fields = [
       ..._baseFields,
       ...(_service?.requiredFields ?? const []),
     ];
+
     for (final f in fields) {
       _controllers.putIfAbsent(f, () => TextEditingController());
     }
@@ -48,15 +51,20 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
+
     final app = AppStateScope.of(context);
+    final appFromDi = GetIt.instance.get<AppState>();
+
     final data = <String, String>{
       for (final e in _controllers.entries) e.key: e.value.text.trim(),
     };
+
     app.submitApplication(service: _service!, formData: data);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Заявление отправлено')),
     );
+
     Navigator.of(context).pop();
   }
 
@@ -93,8 +101,10 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
                   label: const Text('Отправить'),
                 );
               }
+
               final field = fields[index];
               final controller = _controllers[field]!;
+
               TextInputType? type;
               if (field.contains('Телефон')) type = TextInputType.phone;
               if (field.contains('E-mail')) type = TextInputType.emailAddress;

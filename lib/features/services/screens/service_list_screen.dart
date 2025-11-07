@@ -11,6 +11,7 @@ import '../widgets/service_catalogs.dart';
 import '../widgets/service_list_view.dart';
 
 import 'search_service_screen.dart';
+import 'package:get_it/get_it.dart';
 
 class ServiceListScreen extends StatefulWidget {
   const ServiceListScreen({super.key});
@@ -44,7 +45,10 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final app = AppStateScope.of(context);
+    final appFromDi = GetIt.instance.get<AppState>();
+
     final services = app.servicesByCategory(_selectedCategory, query: _query);
 
     return Scaffold(
