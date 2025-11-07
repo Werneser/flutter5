@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:get_it/get_it.dart'; // добавлено для примера DI-поиска, можно не использовать
+
 import 'package:flutter5/features/user_services/screens/user_service_detail_screen.dart';
 
 import '../../../app.dart';
@@ -7,7 +9,9 @@ import '../../../app.dart';
 import '../../profile/screens/profile_screen.dart';
 
 import '../models/user_service.dart';
+
 import '../widgets/user_service_list_view.dart';
+
 import 'status_change_screen.dart';
 
 class UserServiceListScreen extends StatefulWidget {
@@ -45,7 +49,8 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
   @override
   Widget build(BuildContext context) {
     final app = AppStateScope.of(context);
-    final items = app.userServicesByStatus(_status);
+    final appFromDi = GetIt.instance.get<AppState>();
+    final items = appFromDi.userServicesByStatus(_status);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +77,6 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
             Expanded(
               child: UserServiceListView(
                 items: items,
-
                 onTapChangeStatus: (service) async {
                   final result = await Navigator.of(context).push<UserServiceStatus?>(
                     MaterialPageRoute(
@@ -80,7 +84,7 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
                     ),
                   );
                   if (result != null) {
-                    app.updateUserServiceStatus(
+                    appFromDi.updateUserServiceStatus(
                       userServiceId: service.id,
                       status: result,
                     );
@@ -117,7 +121,6 @@ class _StatusFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statuses = [null, ...UserServiceStatus.values];
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

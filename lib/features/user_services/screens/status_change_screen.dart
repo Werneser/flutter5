@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../../app.dart';
+
 import '../models/user_service.dart';
 
 class StatusChangeScreen extends StatelessWidget {
   final UserService service;
-
   const StatusChangeScreen({super.key, required this.service});
 
   @override
   Widget build(BuildContext context) {
-
     final current = service.status;
-
     final statuses = UserServiceStatus.values;
 
     return Scaffold(
