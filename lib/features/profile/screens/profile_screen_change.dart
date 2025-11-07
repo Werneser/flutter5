@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/features/profile/screens/profile_screen.dart';
 
 import '../../../app.dart';
-import 'profile_screen.dart'; // убедитесь, что путь верный и этот файл доступен
-
 class ProfileScreenChange extends StatefulWidget {
   const ProfileScreenChange({
     super.key,
@@ -58,10 +57,10 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _saving = true);
+
     try {
       final appState = AppStateScope.of(context);
       final current = appState.profile;
-
       final updated = current.copyWith(
         fullName: _nameCtrl.text.trim(),
         passport: _passportCtrl.text.trim(),
@@ -69,13 +68,12 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
         phone: _phoneCtrl.text.trim(),
         email: _emailCtrl.text.trim(),
       );
-
       appState.updateProfile(updated);
 
       if (mounted) {
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (_) => ProfileScreen(),
+            builder: (_) => const ProfileScreen(),
           ),
         );
       }

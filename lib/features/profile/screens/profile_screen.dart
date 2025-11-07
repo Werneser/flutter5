@@ -1,14 +1,9 @@
-import 'package:flutter/material.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
-
+import 'package:flutter/material.dart';
 import '../../../app.dart';
-
-import '../../services/screens/service_list_screen.dart';
-
-import 'about_screen.dart';
 import 'profile_screen_change.dart';
-import 'about_govservices_screen.dart';
+import '../../services/screens/service_list_screen.dart';
+import 'package:get_it/get_it.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -46,9 +41,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _openEditScreen() async {
-    final appState = AppStateScope.of(context);
-    final p = appState.profile;
+    // Используем GetIt и AppStateScope как источник данных
+    final appState = GetIt.instance.isRegistered<AppState>()
+        ? GetIt.instance.get<AppState>()
+        : AppStateScope.of(context);
 
+    final p = appState.profile;
     final updated = await Navigator.of(context).pushReplacement<bool, bool>(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => ProfileScreenChange(
@@ -62,7 +60,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.ease;
-
           final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
           return SlideTransition(position: animation.drive(tween), child: child);
         },
@@ -76,157 +73,155 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void _navigateToAboutScreen() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const AboutScreen()),
-    );
-  }
-
   void _navigateToServiceListScreen() {
+    // Прямой переход к списку услуг
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const ServiceListScreen()),
     );
   }
 
-  void _navigateToGovAdsScreen() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const GovAdsScreen()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final appState = AppStateScope.of(context);
-    final profile = appState.profile;
+    final appState = GetIt.instance.isRegistered<AppState>()
+        ? GetIt.instance.get<AppState>()
+        : AppStateScope.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Профиль'),
-        actions: [
-          IconButton(
-            tooltip: 'Редактировать',
-            icon: const Icon(Icons.edit),
-            onPressed: _openEditScreen,
-          ),
-          IconButton(
-            tooltip: 'О приложении',
-            icon: const Icon(Icons.info_outline_rounded),
-            onPressed: _navigateToAboutScreen,
-          ),
-          IconButton(
-            tooltip: 'К списку услуг',
-            icon: const Icon(Icons.list_alt),
-            onPressed: _navigateToServiceListScreen,
-          ),
-          IconButton(
-            tooltip: 'Реклама госуслуг',
-            icon: const Icon(Icons.campaign),
-            onPressed: _navigateToGovAdsScreen,
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: _prefetchImages,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Информация', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 8),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.person),
-                  title: Text(profile.fullName.isNotEmpty ? profile.fullName : 'Имя не указано'),
-                  subtitle: const Text('Полное имя'),
-                ),
+    return AnimatedBuilder(
+      animation: appState,
+      builder: (context, _) {
+        final profile = appState.profile;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Профиль'),
+            actions: [
+              IconButton(
+                tooltip: 'Редактировать',
+                icon: const Icon(Icons.edit),
+                onPressed: _openEditScreen,
               ),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.badge),
-                  title: Text(profile.passport.isNotEmpty ? profile.passport : 'Паспорт не указан'),
-                  subtitle: const Text('Паспорт (серия и номер)'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.credit_card),
-                  title: Text(profile.snils.isNotEmpty ? profile.snils : 'СНИЛС не указан'),
-                  subtitle: const Text('СНИЛС'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.phone),
-                  title: Text(profile.phone.isNotEmpty ? profile.phone : 'Телефон не указан'),
-                  subtitle: const Text('Телефон'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.email),
-                  title: Text(profile.email.isNotEmpty ? profile.email : 'E-mail не указан'),
-                  subtitle: const Text('Электронная почта'),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Text('Фото (офлайн-кэш)', style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(width: 8),
-                  Icon(
-                    _prefetched ? Icons.cloud_done : Icons.cloud_download,
-                    size: 20,
-                    color: _prefetched ? Colors.green : null,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              GridView.builder(
-                shrinkWrap: true,
-                itemCount: _imageUrls.length,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  childAspectRatio: 1,
-                ),
-                itemBuilder: (context, index) {
-                  final url = _imageUrls[index];
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: CachedNetworkImage(
-                      imageUrl: url,
-                      fit: BoxFit.cover,
-                      placeholder: (context, _) => Container(
-                        color: Colors.grey.shade200,
-                        child: const Center(
-                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
-                        ),
-                      ),
-                      errorWidget: (context, _, __) => Container(
-                        color: Colors.grey.shade300,
-                        child: const Center(
-                          child: Icon(Icons.broken_image, color: Colors.grey),
-                        ),
-                      ),
-                      fadeInDuration: const Duration(milliseconds: 200),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Подсказка: при первом открытии онлайн изображения кэшируются. '
-                    'Затем они будут показываться офлайн прямо из кэша.',
-                style: Theme.of(context).textTheme.bodySmall,
+              IconButton(
+                tooltip: 'К списку услуг',
+                icon: const Icon(Icons.list_alt),
+                onPressed: _navigateToServiceListScreen,
               ),
             ],
           ),
-        ),
-      ),
+          body: RefreshIndicator(
+            onRefresh: _prefetchImages,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Информация', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 8),
+                  Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.person),
+                      title: Text(profile.fullName.isNotEmpty
+                          ? profile.fullName
+                          : 'Имя не указано'),
+                      subtitle: const Text('Полное имя'),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.badge),
+                      title: Text(profile.passport.isNotEmpty
+                          ? profile.passport
+                          : 'Паспорт не указан'),
+                      subtitle: const Text('Паспорт (серия и номер)'),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.credit_card),
+                      title: Text(profile.snils.isNotEmpty
+                          ? profile.snils
+                          : 'СНИЛС не указан'),
+                      subtitle: const Text('СНИЛС'),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.phone),
+                      title: Text(profile.phone.isNotEmpty
+                          ? profile.phone
+                          : 'Телефон не указан'),
+                      subtitle: const Text('Телефон'),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.email),
+                      title: Text(profile.email.isNotEmpty
+                          ? profile.email
+                          : 'E-mail не указан'),
+                      subtitle: const Text('Электронная почта'),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text('Фото (офлайн-кэш)', style: Theme.of(context).textTheme.titleLarge),
+                      const SizedBox(width: 8),
+                      Icon(
+                        _prefetched ? Icons.cloud_done : Icons.cloud_download,
+                        size: 20,
+                        color: _prefetched ? Colors.green : null,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: _imageUrls.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 1,
+                    ),
+                    itemBuilder: (context, index) {
+                      final url = _imageUrls[index];
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: CachedNetworkImage(
+                          imageUrl: url,
+                          fit: BoxFit.cover,
+                          placeholder: (context, _) => Container(
+                            color: Colors.grey.shade200,
+                            child: const Center(
+                              child: SizedBox(width: 20, height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2)),
+                            ),
+                          ),
+                          errorWidget: (context, _, __) => Container(
+                            color: Colors.grey.shade300,
+                            child: const Center(
+                              child: Icon(Icons.broken_image, color: Colors.grey),
+                            ),
+                          ),
+                          fadeInDuration: const Duration(milliseconds: 200),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Подсказка: при первом открытии онлайн изображения кэшируются. '
+                        'Затем они будут показываться офлайн прямо из кэша.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
