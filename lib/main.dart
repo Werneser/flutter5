@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'app.dart';
 import 'features/profile/screens/profile_screen.dart' hide ServiceListScreen;
 import 'features/services/screens/service_form_screen.dart';
@@ -8,15 +9,23 @@ import 'features/shared/widgets/bottom_nav_bar.dart';
 import 'features/user_services/screens/user_service_list_screen.dart';
 
 void main() {
-  runApp(AppRoot());
+  final appState = AppState.initial();
+  setupDependencies(appState);
+
+  runApp(AppRoot(appState: appState));
 }
+
 class AppRoot extends StatelessWidget {
-  AppRoot({Key? key}) : super(key: key);
-  final AppState _appState = AppState.initial();
+  final AppState appState;
+
+  AppRoot({Key? key, required this.appState}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+
+
     return AppStateScope(
-      appState: _appState,
+      appState: appState,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Госуслуги — Заявления',
@@ -31,11 +40,16 @@ class AppRoot extends StatelessWidget {
     );
   }
 }
+
 class HomeScaffold extends StatelessWidget {
   const HomeScaffold({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final appState = AppStateScope.of(context);
+    final appStateFromScope = AppStateScope.of(context);
+    final appStateFromDi = getIt<AppState>();
+
+    final appState = appStateFromScope;
 
     return AnimatedBuilder(
       animation: appState,

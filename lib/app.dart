@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 
 import 'features/services/models/service.dart';
 import 'features/user_services/models/user_service.dart';
 
+final GetIt getIt = GetIt.instance;
+
+void setupDependencies(AppState appState) {
+  getIt.registerLazySingleton<AppState>(() => appState);
+}
 
 class UserProfile {
   final String fullName;
@@ -157,7 +163,6 @@ class AppState extends ChangeNotifier {
   }
 }
 
-/// Provider-подобная обертка на чистом Flutter (без пакетов)
 class AppStateScope extends InheritedNotifier<AppState> {
   AppStateScope({
     super.key,
