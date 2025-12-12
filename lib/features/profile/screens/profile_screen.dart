@@ -5,9 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app.dart';
 
-import '../../services/screens/service_list_screen.dart';
-import 'profile_screen_change.dart';
-import 'about_govservices_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -69,8 +66,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _navigateToServiceListScreen() {
     GoRouter.of(context).go('/ServiceList');
   }
-  void _navigateToGovAdsScreen() {
-    GoRouter.of(context).go('/govads');
+  void _navigateToLinkGosuslugiScreen() {
+    GoRouter.of(context).push('/linkGosuslugi');
   }
 
   @override
@@ -101,9 +98,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: _navigateToServiceListScreen,
           ),
           IconButton(
-            tooltip: 'Реклама госуслуг',
-            icon: const Icon(Icons.campaign),
-            onPressed: _navigateToGovAdsScreen,
+            tooltip: 'Привязать аккаунт госуслуг',
+            icon: const Icon(Icons.link),
+            onPressed: _navigateToLinkGosuslugiScreen,
           ),
         ],
       ),

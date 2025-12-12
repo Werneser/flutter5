@@ -32,6 +32,10 @@ class AppBottomNavBar extends StatelessWidget {
           label: 'Поддержка',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.newspaper),
+          label: 'Новости',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Профиль',
         ),
