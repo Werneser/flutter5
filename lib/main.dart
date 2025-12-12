@@ -1,37 +1,35 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/statechange/AppStateScope.dart';
+import 'package:flutter5/domain/models/invoice.dart';
+import 'package:flutter5/domain/models/user_service.dart';
+import 'package:flutter5/injection_container.dart' as di;
 import 'package:flutter5/ui/screens/user_service_list_screen.dart';
 import 'package:flutter5/ui/screens/login_screen.dart';
 import 'package:flutter5/ui/screens/register_screen.dart';
 import 'package:go_router/go_router.dart';
-import 'data/state/app.dart';
+import 'domain/models/service.dart';
 import 'ui/screens/invoice_list_screen.dart';
 import 'ui/screens/link_gosuslugi_screen.dart';
-import 'domain/models/invoice.dart';
 import 'ui/screens/invoice_add_screen.dart';
 import 'ui/screens/invoice_edit_screen.dart';
 import 'ui/screens/profile_screen.dart';
 import 'ui/screens/profile_screen_change.dart';
-import 'domain/models/service.dart';
 import 'ui/screens/service_form_screen.dart';
 import 'ui/screens/HomeScaffold.dart';
 import 'ui/screens/service_list_screen.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/screens/search_service_screen.dart';
 import 'ui/screens/support_screen.dart';
-import 'domain/models/user_service.dart';
 import 'ui/screens/status_change_screen.dart';
 import 'ui/screens/user_service_detail_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
   runApp(AppRoot());
 }
 
 class AppRoot extends StatelessWidget {
   AppRoot({Key? key}) : super(key: key);
-
-  final AppState _appState = AppState.initial();
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +46,11 @@ class AppRoot extends StatelessWidget {
         ),
         GoRoute(
           path: '/',
-          builder: (context, state) => HomeScaffold(),
+          builder: (context, state) => const HomeScaffold(),
         ),
         GoRoute(
           path: '/ServiceList',
-          builder: (context, state) => ServiceListScreen(),
+          builder: (context, state) => const ServiceListScreen(),
         ),
         GoRoute(
           path: '/userServiceList',
@@ -60,7 +58,7 @@ class AppRoot extends StatelessWidget {
         ),
         GoRoute(
           path: '/searchService',
-          builder: (context, state) => SearchServiceScreen(),
+          builder: (context, state) => SearchServiceScreen(initialQuery: state.extra as String? ?? ''),
         ),
         GoRoute(
           path: '/serviceDetail',
@@ -85,19 +83,20 @@ class AppRoot extends StatelessWidget {
         ),
         GoRoute(
           path: '/profile',
-          pageBuilder: (context, state) => const MaterialPage(child: ProfileScreen()),
+          builder: (context, state) => const ProfileScreen(),
         ),
         GoRoute(
           path: '/profile/edit',
-          pageBuilder: (context, state) => MaterialPage(
-            child: ProfileScreenChange(
-              initialFullName: state.extra != null ? (state.extra as Map)['fullName'] : '',
-              initialPassport: state.extra != null ? (state.extra as Map)['passport'] : '',
-              initialSnils: state.extra != null ? (state.extra as Map)['snils'] : '',
-              initialPhone: state.extra != null ? (state.extra as Map)['phone'] : '',
-              initialEmail: state.extra != null ? (state.extra as Map)['email'] : '',
-            ),
-          ),
+          builder: (context, state) {
+            final extra = state.extra as Map<String, String>?;
+            return ProfileScreenChange(
+              initialFullName: extra?['fullName'] ?? '',
+              initialPassport: extra?['passport'] ?? '',
+              initialSnils: extra?['snils'] ?? '',
+              initialPhone: extra?['phone'] ?? '',
+              initialEmail: extra?['email'] ?? '',
+            );
+          },
         ),
         GoRoute(
           path: '/support',
@@ -125,16 +124,13 @@ class AppRoot extends StatelessWidget {
       ],
     );
 
-    return AppStateScope(
-      appState: _appState,
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'Госуслуги — Заявления',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        routerConfig: _router,
-      ),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'Госуслуги — Заявления',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      routerConfig: _router,
     );
   }
 }
