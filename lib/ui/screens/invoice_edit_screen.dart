@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/data/datasources/invoice_remote_datasource.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_it/get_it.dart';
 import '../../domain/models/invoice.dart';
-import '../../data/services/invoice_service.dart';
 
 class InvoiceEditScreen extends StatefulWidget {
   final Invoice invoice;
@@ -9,7 +10,7 @@ class InvoiceEditScreen extends StatefulWidget {
   const InvoiceEditScreen({super.key, required this.invoice});
 
   @override
-  State<InvoiceEditScreen> createState() => _InvoiceEditScreenState();
+  State<InvoiceEditScreen> createState() => _InvoiceEditScreenState(GetIt.I<InvoiceRemoteDataSource>());
 }
 
 class _InvoiceEditScreenState extends State<InvoiceEditScreen> {
@@ -20,6 +21,9 @@ class _InvoiceEditScreenState extends State<InvoiceEditScreen> {
   late TextEditingController _issueAddressController;
   late TextEditingController _destinationAddressController;
   late InvoiceStatus _status;
+  final InvoiceRemoteDataSource invoiceRemoteDataSource;
+
+  _InvoiceEditScreenState(this.invoiceRemoteDataSource);
 
   @override
   void initState() {
@@ -54,8 +58,8 @@ class _InvoiceEditScreenState extends State<InvoiceEditScreen> {
         destinationAddress: _destinationAddressController.text,
       );
 
-      InvoiceService().updateInvoice(updatedInvoice);
-      context.pop();
+      invoiceRemoteDataSource.updateInvoice(updatedInvoice);
+      GoRouter.of(context).pop();
     }
   }
 

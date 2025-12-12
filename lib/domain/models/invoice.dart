@@ -22,31 +22,4 @@ class Invoice {
     required this.issueAddress,
     required this.destinationAddress,
   });
-
-  factory Invoice.fromJson(Map<String, dynamic> json) {
-    return Invoice(
-      id: json['id'] ?? '',
-      serviceName: json['serviceName'] ?? '',
-      invoiceNumber: json['invoiceNumber'] ?? '',
-      status: InvoiceStatus.values.firstWhere(
-            (e) => e.toString() == 'InvoiceStatus.${json['status']}',
-        orElse: () => InvoiceStatus.unpaid,
-      ),
-      amount: (json['amount'] ?? 0).toDouble(),
-      issueAddress: json['issueAddress'] ?? '',
-      destinationAddress: json['destinationAddress'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'serviceName': serviceName,
-      'invoiceNumber': invoiceNumber,
-      'status': status.toString().split('.').last,
-      'amount': amount,
-      'issueAddress': issueAddress,
-      'destinationAddress': destinationAddress,
-    };
-  }
 }

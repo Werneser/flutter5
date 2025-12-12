@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/data/datasources/invoice_remote_datasource.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 import '../../domain/models/invoice.dart';
-import '../../data/services/invoice_service.dart';
 
 class InvoiceAddScreen extends StatefulWidget {
   const InvoiceAddScreen({super.key});
 
   @override
-  State<InvoiceAddScreen> createState() => _InvoiceAddScreenState();
+  State<InvoiceAddScreen> createState() => _InvoiceAddScreenState(GetIt.I<InvoiceRemoteDataSource>());
 }
 
 class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
@@ -19,6 +20,9 @@ class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
   final _issueAddressController = TextEditingController();
   final _destinationAddressController = TextEditingController();
   InvoiceStatus _status = InvoiceStatus.unpaid;
+  final InvoiceRemoteDataSource invoiceRemoteDataSource;
+
+  _InvoiceAddScreenState(this.invoiceRemoteDataSource);
 
   @override
   void dispose() {
@@ -42,8 +46,8 @@ class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
         destinationAddress: _destinationAddressController.text,
       );
 
-      InvoiceService().addInvoice(invoice);
-      context.pop();
+      invoiceRemoteDataSource.addInvoice(invoice);
+      GoRouter.of(context).pop();
     }
   }
 
@@ -114,7 +118,7 @@ class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
                 },
               ),
               DropdownButtonFormField<InvoiceStatus>(
-                value: _status,
+                initialValue: _status,
                 decoration: const InputDecoration(labelText: 'Статус'),
                 items: InvoiceStatus.values.map((status) {
                   return DropdownMenuItem(

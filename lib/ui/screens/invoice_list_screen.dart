@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/data/datasources/invoice_remote_datasource.dart';
 import 'package:go_router/go_router.dart';
-import '../../../domain/models/invoice.dart';
-import '../../../data/services/invoice_service.dart';
+import 'package:get_it/get_it.dart';
+import '../../domain/usecases/get_invoices_usecase.dart';
+import '../../domain/models/invoice.dart';
+import '../../injection_container.dart';
 
 class InvoiceListScreen extends StatefulWidget {
   const InvoiceListScreen({super.key});
 
   @override
-  State<InvoiceListScreen> createState() => _InvoiceListScreenState();
+  State<InvoiceListScreen> createState() => _InvoiceListScreenState(GetIt.I<GetInvoicesUseCase>());
 }
 
 class _InvoiceListScreenState extends State<InvoiceListScreen> {
+  final GetInvoicesUseCase getInvoicesUseCase;
+
+  _InvoiceListScreenState(this.getInvoicesUseCase);
+
   @override
   Widget build(BuildContext context) {
-    final invoiceService = InvoiceService();
-    final invoices = invoiceService.invoices;
+    final invoices = getInvoicesUseCase.execute();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Квитанции к оплате'),
-        automaticallyImplyLeading: false, // Убираем кнопку "назад"
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              context.push('/invoiceAdd').then((_) {
-                setState(() {}); // Обновляем состояние после возвращения
+              GoRouter.of(context).push('/invoiceAdd').then((_) {
+                setState(() {});
               });
             },
           ),
@@ -45,7 +51,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
             ),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) {
-              invoiceService.deleteInvoice(invoice.id);
+              getIt<InvoiceRemoteDataSource>().deleteInvoice(invoice.id);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Квитанция ${invoice.invoiceNumber} удалена')),
               );
@@ -85,7 +91,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                   ],
                 ),
                 onTap: () {
-                  context.push('/invoiceEdit', extra: invoice).then((_) {
+                  GoRouter.of(context).push('/invoiceEdit', extra: invoice).then((_) {
                     setState(() {});
                   });
                 },
