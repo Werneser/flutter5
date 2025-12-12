@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/features/shared/widgets/bottom_nav_bar.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../app.dart';
+import '../auth/services/auth_service.dart';
 import '../profile/screens/profile_screen.dart';
 import '../services/screens/service_list_screen.dart';
 import '../user_services/screens/user_service_list_screen.dart';
@@ -35,6 +37,15 @@ class HomeScaffold extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Госуслуги'),
             centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.exit_to_app),
+                onPressed: () {
+                  AuthService().logout();
+                  context.go('/login');
+                },
+              ),
+            ],
           ),
           body: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
