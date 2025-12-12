@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/data/statechange/AppStateScope.dart';
 
-import '../../data/state/app.dart';
 
 class ProfileScreenChange extends StatefulWidget {
   const ProfileScreenChange({

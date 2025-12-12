@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter5/data/statechange/AppStateScope.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/state/app.dart';
 
 
 class ProfileScreen extends StatefulWidget {
