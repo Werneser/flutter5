@@ -1,6 +1,4 @@
-
-
-import '../../services/models/service.dart';
+import 'service.dart';
 
 enum UserServiceStatus {
   submitted,
