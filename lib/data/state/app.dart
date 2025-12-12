@@ -1,33 +1,22 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-
-import '../../domain/models/UserProfile.dart';
+import 'package:flutter5/domain/models/UserProfile.dart';
 import '../../domain/models/service.dart';
 import '../../domain/models/user_service.dart';
-import '../services/service_data.dart';
-
-
-
 
 class AppState extends ChangeNotifier {
   int currentTabIndex;
-  List<Service> catalog;
   List<UserService> myServices;
   UserProfile profile;
 
   AppState({
     required this.currentTabIndex,
-    required this.catalog,
     required this.myServices,
     required this.profile,
   });
 
   factory AppState.initial() {
-
-
     return AppState(
       currentTabIndex: 0,
-      catalog: demoCatalog,
       myServices: <UserService>[],
       profile: const UserProfile(),
     );
@@ -73,23 +62,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Service> servicesByCategory(
-      ServiceCategory? category, {
-        String query = '',
-      }) {
-    final q = query.trim().toLowerCase();
-    return catalog.where((s) {
-      final catOk = category == null || s.category == category;
-      final queryOk = q.isEmpty ||
-          s.title.toLowerCase().contains(q) ||
-          s.description.toLowerCase().contains(q);
-      return catOk && queryOk;
-    }).toList();
-  }
-
   List<UserService> userServicesByStatus(UserServiceStatus? status) {
     if (status == null) return myServices;
     return myServices.where((e) => e.status == status).toList();
   }
 }
-
