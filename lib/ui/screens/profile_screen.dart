@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter5/data/statechange/AppStateScope.dart';
+import 'package:flutter5/data/datasources/profile_remote_datasource.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:get_it/get_it.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState(GetIt.I<ProfileRemoteDataSource>());
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileRemoteDataSource profileRemoteDataSource;
   List<String> _imageUrls = const [
     'https://proverk.ru/uploads/images/proverka-snils-1723130846.jpg',
     'https://s.kdelo.ru/images/Karina_Pics/passport_min.png',
@@ -23,6 +23,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ];
 
   bool _prefetched = false;
+
+  _ProfileScreenState(this.profileRemoteDataSource);
 
   @override
   void initState() {
@@ -42,16 +44,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _openEditScreen() async {
-    final appState = AppStateScope.of(context);
-    final p = appState.profile;
+    final profile = profileRemoteDataSource.getProfile();
     final updated = await GoRouter.of(context).push<bool>(
       '/profile/edit',
       extra: {
-        'fullName': p.fullName,
-        'passport': p.passport,
-        'snils': p.snils,
-        'phone': p.phone,
-        'email': p.email,
+        'fullName': profile.fullName,
+        'passport': profile.passport,
+        'snils': profile.snils,
+        'phone': profile.phone,
+        'email': profile.email,
       },
     );
     if (updated == true && mounted) {
@@ -60,17 +61,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
   }
+
   void _navigateToServiceListScreen() {
     GoRouter.of(context).go('/ServiceList');
   }
+
   void _navigateToLinkGosuslugiScreen() {
     GoRouter.of(context).push('/linkGosuslugi');
   }
 
   @override
   Widget build(BuildContext context) {
-    final appState = AppStateScope.of(context);
-    final profile = appState.profile;
+    final profile = profileRemoteDataSource.getProfile();
 
     return Scaffold(
       appBar: AppBar(
@@ -85,8 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             tooltip: 'Техническая поддержка',
             icon: const Icon(Icons.support_agent),
             onPressed: () {
-              final appState = AppStateScope.of(context);
-              appState.setTab(3);
+              GoRouter.of(context).go('/support');
             },
           ),
           IconButton(
@@ -209,5 +210,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-

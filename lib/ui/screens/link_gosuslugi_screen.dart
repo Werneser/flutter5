@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/data/datasources/link_gosuslugi_remote_datasource.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_it/get_it.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LinkGosuslugiScreen extends StatefulWidget {
   const LinkGosuslugiScreen({super.key});
 
   @override
-  State<LinkGosuslugiScreen> createState() => _LinkGosuslugiScreenState();
+  State<LinkGosuslugiScreen> createState() => _LinkGosuslugiScreenState(GetIt.I<LinkGosuslugiRemoteDataSource>());
 }
 
 class _LinkGosuslugiScreenState extends State<LinkGosuslugiScreen> {
   final _formKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
+  final LinkGosuslugiRemoteDataSource linkGosuslugiRemoteDataSource;
   bool _isLoading = false;
+
+  _LinkGosuslugiScreenState(this.linkGosuslugiRemoteDataSource);
 
   @override
   void dispose() {
@@ -28,8 +33,10 @@ class _LinkGosuslugiScreenState extends State<LinkGosuslugiScreen> {
         _isLoading = true;
       });
 
-      // Имитация процесса привязки
-      await Future.delayed(const Duration(seconds: 2));
+      await linkGosuslugiRemoteDataSource.linkAccount(
+        _loginController.text,
+        _passwordController.text,
+      );
 
       setState(() {
         _isLoading = false;

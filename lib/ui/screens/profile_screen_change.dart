@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/statechange/AppStateScope.dart';
-
+import 'package:flutter5/data/datasources/profile_remote_datasource.dart';
+import 'package:flutter5/domain/models/UserProfile.dart';
+import 'package:get_it/get_it.dart';
 
 class ProfileScreenChange extends StatefulWidget {
   const ProfileScreenChange({
@@ -20,11 +20,12 @@ class ProfileScreenChange extends StatefulWidget {
   final String initialEmail;
 
   @override
-  State<ProfileScreenChange> createState() => _ProfileScreenChangeState();
+  State<ProfileScreenChange> createState() => _ProfileScreenChangeState(GetIt.I<ProfileRemoteDataSource>());
 }
 
 class _ProfileScreenChangeState extends State<ProfileScreenChange> {
   final _formKey = GlobalKey<FormState>();
+  final ProfileRemoteDataSource profileRemoteDataSource;
 
   late final TextEditingController _nameCtrl;
   late final TextEditingController _passportCtrl;
@@ -33,6 +34,8 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
   late final TextEditingController _emailCtrl;
 
   bool _saving = false;
+
+  _ProfileScreenChangeState(this.profileRemoteDataSource);
 
   @override
   void initState() {
@@ -59,10 +62,7 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
 
     setState(() => _saving = true);
     try {
-      final appState = AppStateScope.of(context);
-      final current = appState.profile;
-
-      final updated = current.copyWith(
+      final updated = UserProfile(
         fullName: _nameCtrl.text.trim(),
         passport: _passportCtrl.text.trim(),
         snils: _snilsCtrl.text.trim(),
@@ -70,7 +70,7 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
         email: _emailCtrl.text.trim(),
       );
 
-      appState.updateProfile(updated);
+      profileRemoteDataSource.updateProfile(updated);
       if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
