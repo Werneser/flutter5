@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../../app.dart';
 
 import '../../services/screens/service_list_screen.dart';
-import 'AboutScreen.dart';
 import 'profile_screen_change.dart';
 import 'about_govservices_screen.dart';
 
@@ -89,9 +88,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: _openEditScreen,
           ),
           IconButton(
-            tooltip: 'О приложении',
-            icon: const Icon(Icons.info_outline_rounded),
-            onPressed: _navigateToAboutScreen,
+            tooltip: 'Техническая поддержка',
+            icon: const Icon(Icons.support_agent),
+            onPressed: () {
+              final appState = AppStateScope.of(context);
+              appState.setTab(2);
+            },
           ),
           IconButton(
             tooltip: 'К списку услуг',

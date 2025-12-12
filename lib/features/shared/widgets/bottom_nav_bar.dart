@@ -15,6 +15,9 @@ class AppBottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: Colors.blue,
+      unselectedItemColor: Colors.grey,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.apps),
@@ -23,6 +26,10 @@ class AppBottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.assignment),
           label: 'Мои услуги',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.support_agent),
+          label: 'Поддержка',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
