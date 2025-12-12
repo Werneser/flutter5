@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../app.dart';
-import '../models/service.dart';
+import 'package:flutter5/data/statechange/AppStateScope.dart';
+import '../../data/state/app.dart';
+import '../../domain/models/service.dart';
 
 class ServiceFormScreen extends StatefulWidget {
   final Service? service;

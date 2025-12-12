@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/features/shared/widgets/bottom_nav_bar.dart';
+import 'package:flutter5/data/statechange/AppStateScope.dart';
+import 'package:flutter5/ui/widgets/bottom_nav_bar.dart';
+import 'package:flutter5/ui/screens/invoice_list_screen.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../app.dart';
-import '../auth/services/auth_service.dart';
-import '../invoices/screens/invoice_list_screen.dart';
-import '../profile/screens/profile_screen.dart';
-import '../services/screens/service_list_screen.dart';
-import '../support/screens/support_screen.dart';
-import '../user_services/screens/user_service_list_screen.dart';
+import '../../data/services/auth_service.dart';
+import 'profile_screen.dart';
+import 'service_list_screen.dart';
+import 'support_screen.dart';
+import 'user_service_list_screen.dart';
 
 
 class HomeScaffold extends StatelessWidget {

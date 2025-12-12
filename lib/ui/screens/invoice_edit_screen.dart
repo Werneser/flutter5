@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../models/invoice.dart';
-import '../services/invoice_service.dart';
+import '../../domain/models/invoice.dart';
+import '../../data/services/invoice_service.dart';
 
 class InvoiceEditScreen extends StatefulWidget {
   final Invoice invoice;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
-import '../models/invoice.dart';
-import '../services/invoice_service.dart';
+import '../../domain/models/invoice.dart';
+import '../../data/services/invoice_service.dart';
 
 class InvoiceAddScreen extends StatefulWidget {
   const InvoiceAddScreen({super.key});

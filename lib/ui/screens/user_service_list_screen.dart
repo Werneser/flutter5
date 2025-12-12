@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/data/statechange/AppStateScope.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app.dart';
-import '../models/user_service.dart';
+import '../../data/state/app.dart';
+import '../../domain/models/user_service.dart';
 import '../widgets/user_service_list_view.dart';
 
 class UserServiceListScreen extends StatefulWidget {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/data/statechange/AppStateScope.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app.dart';
-import '../models/service.dart';
+import '../../../data/state/app.dart';
+import '../../../domain/models/service.dart';
 import '../widgets/service_catalogs.dart';
 import '../widgets/service_list_view.dart';
 

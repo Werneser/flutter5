@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../services/models/service.dart';
-import '../models/user_service.dart';
+import '../../domain/models/service.dart';
+import '../../domain/models/user_service.dart';
 
 class ServiceDetailScreen extends StatelessWidget {
   const ServiceDetailScreen({Key? key, required this.userService}) : super(key: key);
