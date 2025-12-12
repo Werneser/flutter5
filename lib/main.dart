@@ -3,6 +3,8 @@ import 'package:flutter5/features/user_services/screens/user_service_list_screen
 import 'package:go_router/go_router.dart';
 
 import 'app.dart';
+import 'features/auth/screens/login_screen.dart';
+import 'features/auth/screens/register_screen.dart';
 import 'features/profile/screens/AboutScreen.dart';
 import 'features/profile/screens/about_govservices_screen.dart';
 import 'features/profile/screens/profile_screen.dart';
@@ -29,8 +31,16 @@ class AppRoot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GoRouter _router = GoRouter(
-      initialLocation: '/',
+      initialLocation: '/login',
       routes: [
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginScreen(),
+        ),
+        GoRoute(
+          path: '/register',
+          builder: (context, state) => const RegisterScreen(),
+        ),
         GoRoute(
           path: '/',
           builder: (context, state) => HomeScaffold(),
