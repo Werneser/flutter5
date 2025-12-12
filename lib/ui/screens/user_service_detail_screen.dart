@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../domain/models/service.dart';
+import 'package:flutter5/domain/models/service.dart';
 import '../../domain/models/user_service.dart';
 
 class ServiceDetailScreen extends StatelessWidget {
-  const ServiceDetailScreen({Key? key, required this.userService}) : super(key: key);
-
   final UserService userService;
+
+  const ServiceDetailScreen({Key? key, required this.userService}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class ServiceDetailScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(service.description),
             const SizedBox(height: 16),
-            Text('Класс: ${service.category.label}'),
+            Text('Категория: ${service.category.label}'),
             const SizedBox(height: 12),
             Text('Заявка: ${userService.appliedAt.toLocal()}'),
             const SizedBox(height: 12),

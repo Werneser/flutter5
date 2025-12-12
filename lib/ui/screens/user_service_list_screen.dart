@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/statechange/AppStateScope.dart';
+import 'package:flutter5/data/datasources/user_service_remote_datasource.dart';
+import 'package:flutter5/domain/models/user_service.dart';
 import 'package:go_router/go_router.dart';
-import '../../domain/models/user_service.dart';
+import 'package:get_it/get_it.dart';
 import '../widgets/user_service_list_view.dart';
 
 class UserServiceListScreen extends StatefulWidget {
   const UserServiceListScreen({super.key});
 
   @override
-  State<UserServiceListScreen> createState() => _UserServiceListScreenState();
+  State<UserServiceListScreen> createState() => _UserServiceListScreenState(GetIt.I<UserServiceRemoteDataSource>());
 }
 
 class _UserServiceListScreenState extends State<UserServiceListScreen> {
   UserServiceStatus? _status;
+  final UserServiceRemoteDataSource userServiceRemoteDataSource;
+
+  _UserServiceListScreenState(this.userServiceRemoteDataSource);
 
   void _goToProfile() {
     GoRouter.of(context).go('/profile');
@@ -24,19 +28,18 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
       extra: service,
     ).then((result) {
       if (result != null) {
-        final app = AppStateScope.of(context);
-        app.updateUserServiceStatus(
+        userServiceRemoteDataSource.updateUserServiceStatus(
           userServiceId: service.id,
           status: result,
         );
+        setState(() {});
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final app = AppStateScope.of(context);
-    final items = app.userServicesByStatus(_status);
+    final items = userServiceRemoteDataSource.getUserServicesByStatus(_status);
 
     return Scaffold(
       appBar: AppBar(
@@ -69,10 +72,11 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
                     extra: service,
                   );
                   if (result != null) {
-                    app.updateUserServiceStatus(
+                    userServiceRemoteDataSource.updateUserServiceStatus(
                       userServiceId: service.id,
                       status: result,
                     );
+                    setState(() {});
                   }
                 },
                 onTap: (service) async {
