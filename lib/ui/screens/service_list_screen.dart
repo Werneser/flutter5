@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/statechange/AppStateScope.dart';
+import 'package:flutter5/data/datasources/service_remote_datasource.dart';
+import 'package:flutter5/domain/models/service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import '../../../domain/models/service.dart';
 import '../widgets/service_catalogs.dart';
 import '../widgets/service_list_view.dart';
-
 
 class ServiceListScreen extends StatefulWidget {
   const ServiceListScreen({super.key});
 
   @override
-  State<ServiceListScreen> createState() => _ServiceListScreenState();
+  State<ServiceListScreen> createState() => _ServiceListScreenState(GetIt.I<ServiceRemoteDataSource>());
 }
 
 class _ServiceListScreenState extends State<ServiceListScreen> {
   ServiceCategory? _selectedCategory;
   String _query = '';
+  final ServiceRemoteDataSource serviceRemoteDataSource;
+
+  _ServiceListScreenState(this.serviceRemoteDataSource);
 
   void _goToUserServiceList() {
     GoRouter.of(context).go('/userServiceList');
@@ -33,8 +36,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final app = AppStateScope.of(context);
-    final services = app.servicesByCategory(_selectedCategory, query: _query);
+    final services = serviceRemoteDataSource.getServices(category: _selectedCategory, query: _query);
 
     return Scaffold(
       appBar: AppBar(

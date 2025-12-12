@@ -25,7 +25,6 @@ class _SearchServiceScreenState extends State<SearchServiceScreen> {
   }
 
   void _apply() {
-
     Navigator.of(context).pop(_controller.text);
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/statechange/AppStateScope.dart';
+import 'package:flutter5/data/datasources/service_remote_datasource.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/models/service.dart';
 
 class ServiceFormScreen extends StatefulWidget {
@@ -8,13 +10,16 @@ class ServiceFormScreen extends StatefulWidget {
   const ServiceFormScreen({super.key, this.service});
 
   @override
-  State<ServiceFormScreen> createState() => _ServiceFormScreenState();
+  State<ServiceFormScreen> createState() => _ServiceFormScreenState(GetIt.I<ServiceRemoteDataSource>());
 }
 
 class _ServiceFormScreenState extends State<ServiceFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {};
   Service? _service;
+  final ServiceRemoteDataSource serviceRemoteDataSource;
+
+  _ServiceFormScreenState(this.serviceRemoteDataSource);
 
   static const List<String> _baseFields = [
     'ФИО',
@@ -48,12 +53,11 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    final app = AppStateScope.of(context);
     final data = <String, String>{
       for (final e in _controllers.entries) e.key: e.value.text.trim(),
     };
 
-    app.submitApplication(service: _service!, formData: data);
+    serviceRemoteDataSource.submitApplication(service: _service!, formData: data);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Заявление отправлено')),
