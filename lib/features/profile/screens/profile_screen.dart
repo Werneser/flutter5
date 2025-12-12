@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: const Icon(Icons.support_agent),
             onPressed: () {
               final appState = AppStateScope.of(context);
-              appState.setTab(2);
+              appState.setTab(3);
             },
           ),
           IconButton(

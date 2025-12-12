@@ -7,7 +7,7 @@ import 'features/user_services/models/user_service.dart';
 
 class UserProfile {
   final String fullName;
-  final String passport; // серия и номер
+  final String passport;
   final String snils;
   final String phone;
   final String email;
@@ -157,7 +157,6 @@ class AppState extends ChangeNotifier {
   }
 }
 
-/// Provider-подобная обертка на чистом Flutter (без пакетов)
 class AppStateScope extends InheritedNotifier<AppState> {
   AppStateScope({
     super.key,

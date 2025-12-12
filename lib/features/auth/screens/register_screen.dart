@@ -89,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Вы успешно зарегистрировались!')),
                     );
-                    context.go('/login');
+                    context.go('/');
                   }
                 },
                 child: const Text('Зарегистрироваться'),
