@@ -6,6 +6,7 @@ import '../../app.dart';
 import '../auth/services/auth_service.dart';
 import '../profile/screens/profile_screen.dart';
 import '../services/screens/service_list_screen.dart';
+import '../support/screens/support_screen.dart';
 import '../user_services/screens/user_service_list_screen.dart';
 
 
@@ -28,6 +29,9 @@ class HomeScaffold extends StatelessWidget {
             body = const UserServiceListScreen();
             break;
           case 2:
+            body = const SupportScreen();
+            break;
+          case 3:
           default:
             body = const ProfileScreen();
             break;

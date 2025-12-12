@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'app.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/screens/register_screen.dart';
-import 'features/profile/screens/AboutScreen.dart';
 import 'features/profile/screens/about_govservices_screen.dart';
 import 'features/profile/screens/profile_screen.dart';
 import 'features/profile/screens/profile_screen_change.dart';
@@ -15,6 +14,7 @@ import 'features/services/screens/service_list_screen.dart';
 import 'features/shared/HomeScaffold.dart';
 import 'features/shared/app_theme.dart';
 import 'features/services/screens/search_service_screen.dart';
+import 'features/support/screens/support_screen.dart';
 import 'features/user_services/models/user_service.dart';
 import 'features/user_services/screens/status_change_screen.dart';
 import 'features/user_services/screens/user_service_detail_screen.dart';
@@ -95,8 +95,8 @@ class AppRoot extends StatelessWidget {
           ),
         ),
         GoRoute(
-          path: '/about',
-          pageBuilder: (context, state) => const MaterialPage(child: AboutScreen()),
+          path: '/support',
+          builder: (context, state) => const SupportScreen(),
         ),
         GoRoute(
           path: '/govads',
