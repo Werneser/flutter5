@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/service.dart';
+import '../../domain/models/service.dart';
 
 
 class ServiceListView extends StatelessWidget {
