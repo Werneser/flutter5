@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'app.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/screens/register_screen.dart';
-import 'features/profile/screens/about_govservices_screen.dart';
+import 'features/gosuslugi/screens/link_gosuslugi_screen.dart';
 import 'features/profile/screens/profile_screen.dart';
 import 'features/profile/screens/profile_screen_change.dart';
 import 'features/services/models/service.dart';
@@ -99,8 +99,8 @@ class AppRoot extends StatelessWidget {
           builder: (context, state) => const SupportScreen(),
         ),
         GoRoute(
-          path: '/govads',
-          pageBuilder: (context, state) => const MaterialPage(child: GovAdsScreen()),
+          path: '/linkGosuslugi',
+          builder: (context, state) => const LinkGosuslugiScreen(),
         ),
       ],
     );
