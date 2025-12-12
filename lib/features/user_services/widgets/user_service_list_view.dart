@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../services/models/service.dart';
 import '../models/user_service.dart';
 
 class UserServiceListView extends StatelessWidget {
@@ -8,7 +7,7 @@ class UserServiceListView extends StatelessWidget {
   final ValueChanged<UserService> onTap;
   final ValueChanged<UserService> onTapChangeStatus;
   final void Function(UserService)? onSecondaryTap;
-  const UserServiceListView({
+  const UserServiceListView({super.key, 
     required this.items,
     required this.onChangeStatus,
     required this.onTap,

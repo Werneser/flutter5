@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 
 import 'features/services/models/service.dart';
@@ -164,11 +163,11 @@ class AppState extends ChangeNotifier {
 }
 
 class AppStateScope extends InheritedNotifier<AppState> {
-  AppStateScope({
+  const AppStateScope({
     super.key,
     required AppState appState,
-    required Widget child,
-  }) : super(notifier: appState, child: child);
+    required super.child,
+  }) : super(notifier: appState);
 
   static AppState of(BuildContext context) {
     final scope =

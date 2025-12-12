@@ -4,7 +4,7 @@ import '../../services/models/service.dart';
 import '../models/user_service.dart';
 
 class ServiceDetailScreen extends StatelessWidget {
-  const ServiceDetailScreen({Key? key, required this.userService}) : super(key: key);
+  const ServiceDetailScreen({super.key, required this.userService});
 
   final UserService userService;
 

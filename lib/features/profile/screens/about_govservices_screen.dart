@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GovAdsScreen extends StatelessWidget {
-  const GovAdsScreen({Key? key}) : super(key: key);
+  const GovAdsScreen({super.key});
 
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);

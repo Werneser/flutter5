@@ -13,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  List<String> _imageUrls = const [
+  final List<String> _imageUrls = const [
     'https://proverk.ru/uploads/images/proverka-snils-1723130846.jpg',
     'https://s.kdelo.ru/images/Karina_Pics/passport_min.png',
     'https://static.tildacdn.com/tild3761-6439-4931-b835-353531616233/610067_47fb143b6eebd.jpg',

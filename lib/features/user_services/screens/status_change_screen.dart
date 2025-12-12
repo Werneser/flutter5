@@ -49,11 +49,10 @@ class _StatusChip extends StatelessWidget {
   final VoidCallback onSelected;
 
   const _StatusChip({
-    Key? key,
     required this.status,
     required this.isSelected,
     required this.onSelected,
-  }) : super(key: key);
+  });
 
   Color _color(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
