@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../app.dart';
 import '../models/user_service.dart';
 
 class StatusChangeScreen extends StatelessWidget {

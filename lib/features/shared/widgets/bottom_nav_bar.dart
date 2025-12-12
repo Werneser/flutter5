@@ -28,12 +28,12 @@ class AppBottomNavBar extends StatelessWidget {
           label: 'Мои услуги',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.support_agent),
-          label: 'Поддержка',
+          icon: Icon(Icons.receipt),
+          label: 'Квитанции',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.newspaper),
-          label: 'Новости',
+          icon: Icon(Icons.support_agent),
+          label: 'Поддержка',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),

@@ -1,11 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter5/features/user_services/screens/user_service_list_screen.dart';
 import 'package:go_router/go_router.dart';
-
 import 'app.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/screens/register_screen.dart';
 import 'features/gosuslugi/screens/link_gosuslugi_screen.dart';
+import 'features/invoices/models/invoice.dart';
+import 'features/invoices/screens/invoice_add_screen.dart';
+import 'features/invoices/screens/invoice_edit_screen.dart';
+import 'features/invoices/screens/invoice_list_screen.dart';
 import 'features/profile/screens/profile_screen.dart';
 import 'features/profile/screens/profile_screen_change.dart';
 import 'features/services/models/service.dart';
@@ -101,6 +105,21 @@ class AppRoot extends StatelessWidget {
         GoRoute(
           path: '/linkGosuslugi',
           builder: (context, state) => const LinkGosuslugiScreen(),
+        ),
+        GoRoute(
+          path: '/invoices',
+          builder: (context, state) => const InvoiceListScreen(),
+        ),
+        GoRoute(
+          path: '/invoiceAdd',
+          builder: (context, state) => const InvoiceAddScreen(),
+        ),
+        GoRoute(
+          path: '/invoiceEdit',
+          builder: (context, state) {
+            final invoice = state.extra as Invoice;
+            return InvoiceEditScreen(invoice: invoice);
+          },
         ),
       ],
     );

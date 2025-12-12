@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app.dart';
 import '../auth/services/auth_service.dart';
+import '../invoices/screens/invoice_list_screen.dart';
 import '../profile/screens/profile_screen.dart';
 import '../services/screens/service_list_screen.dart';
 import '../support/screens/support_screen.dart';
@@ -29,9 +30,12 @@ class HomeScaffold extends StatelessWidget {
             body = const UserServiceListScreen();
             break;
           case 2:
-            body = const SupportScreen();
+            body = const InvoiceListScreen();
             break;
           case 3:
+            body = const SupportScreen();
+            break;
+          case 4:
           default:
             body = const ProfileScreen();
             break;

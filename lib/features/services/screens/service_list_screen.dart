@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app.dart';
-import '../../user_services/screens/user_service_list_screen.dart';
 import '../models/service.dart';
 import '../widgets/service_catalogs.dart';
 import '../widgets/service_list_view.dart';
