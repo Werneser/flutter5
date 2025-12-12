@@ -1,47 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/data/datasources/support_remote_datasource.dart';
+import 'package:get_it/get_it.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
 
   @override
-  State<SupportScreen> createState() => _SupportScreenState();
+  State<SupportScreen> createState() => _SupportScreenState(GetIt.I<SupportRemoteDataSource>());
 }
 
 class _SupportScreenState extends State<SupportScreen> {
-  final List<Map<String, String>> _faq = [
-    {
-      'question': 'Как восстановить пароль?',
-      'answer': 'Чтобы восстановить пароль, перейдите на экран авторизации и нажмите "Забыли пароль?". Следуйте инструкциям на экране.'
-    },
-    {
-      'question': 'Как изменить данные профиля?',
-      'answer': 'Вы можете изменить данные профиля, перейдя в раздел "Профиль" и нажав на кнопку "Редактировать".'
-    },
-    {
-      'question': 'Как подать заявку на услугу?',
-      'answer': 'Перейдите в раздел "Каталог", выберите нужную услугу и нажмите "Подать заявку".'
-    },
-    {
-      'question': 'Как отследить статус заявки?',
-      'answer': 'Все ваши заявки отображаются в разделе "Мои услуги". Выберите нужную заявку, чтобы увидеть её статус.'
-    },
-  ];
+  final SupportRemoteDataSource supportRemoteDataSource;
 
-  final List<Map<String, String>> _messages = [];
+  _SupportScreenState(this.supportRemoteDataSource);
+
   final TextEditingController _messageController = TextEditingController();
 
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
-      setState(() {
-        _messages.add({'text': _messageController.text, 'isMe': 'true'});
-        _messages.add({'text': 'Спасибо за ваше сообщение! Мы ответим в ближайшее время.', 'isMe': 'false'});
-      });
+      supportRemoteDataSource.sendMessage(_messageController.text);
       _messageController.clear();
+      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final faq = supportRemoteDataSource.getFAQ();
+    final messages = supportRemoteDataSource.getMessages();
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -62,9 +49,9 @@ class _SupportScreenState extends State<SupportScreen> {
                 Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: _messages.length,
+                    itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      final message = _messages[index];
+                      final message = messages[index];
                       return Align(
                         alignment: message['isMe'] == 'true'
                             ? Alignment.centerRight
@@ -111,9 +98,9 @@ class _SupportScreenState extends State<SupportScreen> {
             // FAQ
             ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: _faq.length,
+              itemCount: faq.length,
               itemBuilder: (context, index) {
-                final item = _faq[index];
+                final item = faq[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: 16),
                   child: ExpansionTile(

@@ -1,76 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/statechange/AppStateScope.dart';
+import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
 import 'package:flutter5/ui/widgets/bottom_nav_bar.dart';
-import 'package:flutter5/ui/screens/invoice_list_screen.dart';
 import 'package:go_router/go_router.dart';
-import '../../data/services/auth_service.dart';
-import 'profile_screen.dart';
-import 'service_list_screen.dart';
-import 'support_screen.dart';
-import 'user_service_list_screen.dart';
+import 'package:get_it/get_it.dart';
+import '../screens/invoice_list_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/service_list_screen.dart';
+import '../screens/support_screen.dart';
+import '../screens/user_service_list_screen.dart';
 
-
-class HomeScaffold extends StatelessWidget {
+class HomeScaffold extends StatefulWidget {
   const HomeScaffold({Key? key}) : super(key: key);
 
   @override
+  State<HomeScaffold> createState() => _HomeScaffoldState();
+}
+
+class _HomeScaffoldState extends State<HomeScaffold> {
+  int _currentIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
-    final appState = AppStateScope.of(context);
+    final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
 
-    return AnimatedBuilder(
-      animation: appState,
-      builder: (context, child) {
-        Widget body;
-        switch (appState.currentTabIndex) {
-          case 0:
-            body = const ServiceListScreen();
-            break;
-          case 1:
-            body = const UserServiceListScreen();
-            break;
-          case 2:
-            body = const InvoiceListScreen();
-            break;
-          case 3:
-            body = const SupportScreen();
-            break;
-          case 4:
-          default:
-            body = const ProfileScreen();
-            break;
-        }
+    Widget _getBody() {
+      switch (_currentIndex) {
+        case 0:
+          return const ServiceListScreen();
+        case 1:
+          return const UserServiceListScreen();
+        case 2:
+          return const InvoiceListScreen();
+        case 3:
+          return const SupportScreen();
+        case 4:
+        default:
+          return const ProfileScreen();
+      }
+    }
 
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Госуслуги'),
-            centerTitle: true,
-            actions: [
-              IconButton(
-                icon: Icon(Icons.exit_to_app),
-                onPressed: () {
-                  AuthService().logout();
-                  context.go('/login');
-                },
-              ),
-            ],
-          ),
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              final offsetAnimation = Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation);
-              return SlideTransition(position: offsetAnimation, child: child);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Госуслуги'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              authRemoteDataSource.logout();
+              GoRouter.of(context).go('/login');
             },
-            child: body,
           ),
-          bottomNavigationBar: AppBottomNavBar(
-            currentIndex: appState.currentTabIndex,
-            onTap: appState.setTab,
-          ),
-        );
-      },
+        ],
+      ),
+      body: _getBody(),
+      bottomNavigationBar: AppBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ),
     );
   }
 }
