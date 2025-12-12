@@ -43,7 +43,6 @@ class Service {
   final String title;
   final String description;
   final ServiceCategory category;
-
   final List<String> requiredFields;
 
   const Service({
@@ -54,3 +53,4 @@ class Service {
     this.requiredFields = const [],
   });
 }
+
