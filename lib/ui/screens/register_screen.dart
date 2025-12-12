@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../data/services/auth_service.dart';
+import 'package:get_it/get_it.dart';
+import '../../domain/usecases/register_usecase.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState(GetIt.I<RegisterUseCase>());
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -14,7 +15,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _authService = AuthService();
+  final RegisterUseCase registerUseCase;
+
+  _RegisterScreenState(this.registerUseCase);
 
   @override
   void dispose() {
@@ -79,15 +82,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    _authService.registerUser(
+                    await registerUseCase.execute(
                       _nameController.text,
                       _loginController.text,
                       _passwordController.text,
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Вы успешно зарегистрировались!')),
+                      const SnackBar(content: Text('Вы успешно зарегистрировались!')),
                     );
                     context.go('/');
                   }

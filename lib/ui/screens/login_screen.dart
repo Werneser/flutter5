@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../data/services/auth_service.dart';
+import 'package:get_it/get_it.dart';
+import '../../domain/usecases/login_usecase.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState(GetIt.I<LoginUseCase>());
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _authService = AuthService();
+  final LoginUseCase loginUseCase;
+
+  _LoginScreenState(this.loginUseCase);
 
   @override
   void dispose() {
@@ -65,18 +68,18 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    final success = _authService.loginUser(
+                    final success = loginUseCase.execute(
                       _loginController.text,
                       _passwordController.text,
                     );
                     if (success) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Вы успешно вошли!')),
+                        const SnackBar(content: Text('Вы успешно вошли!')),
                       );
                       context.go('/');
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Неверный логин или пароль')),
+                        const SnackBar(content: Text('Неверный логин или пароль')),
                       );
                     }
                   }
