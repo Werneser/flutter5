@@ -1,4 +1,4 @@
-import '../models/user.dart';
+import '../../domain/models/user.dart';
 
 class AuthService {
   static final AuthService _instance = AuthService._internal();

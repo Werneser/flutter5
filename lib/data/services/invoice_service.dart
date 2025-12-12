@@ -1,4 +1,4 @@
-import '../models/invoice.dart';
+import '../../domain/models/invoice.dart';
 
 class InvoiceService {
   static final InvoiceService _instance = InvoiceService._internal();
@@ -12,7 +12,6 @@ class InvoiceService {
   List<Invoice> get invoices => List.unmodifiable(_invoices);
 
   void _initializeDefaultInvoices() {
-    // Добавление базовых квитанций
     _invoices.addAll([
       Invoice(
         id: '1',
