@@ -1,35 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
 import 'package:flutter5/domain/models/invoice.dart';
+import 'package:flutter5/domain/models/service.dart';
 import 'package:flutter5/domain/models/user_service.dart';
 import 'package:flutter5/injection_container.dart' as di;
-import 'package:flutter5/ui/features/application/screens/user_service_list_screen.dart';
 import 'package:flutter5/ui/features/authentication/screens/login_screen.dart';
 import 'package:flutter5/ui/features/authentication/screens/register_screen.dart';
+import 'package:flutter5/ui/features/gosuslugi/screens/link_gosuslugi_screen.dart';
+import 'package:flutter5/ui/features/invoice/screens/invoice_add_screen.dart';
+import 'package:flutter5/ui/features/invoice/screens/invoice_edit_screen.dart';
 import 'package:flutter5/ui/features/invoice/screens/invoice_list_screen.dart';
-import 'package:flutter5/ui/shared/HomeScaffold.dart';
+import 'package:flutter5/ui/features/profile/screens/profile_screen.dart';
+import 'package:flutter5/ui/features/profile/screens/profile_screen_change.dart';
+import 'package:flutter5/ui/features/service/screens/search_service_screen.dart';
+import 'package:flutter5/ui/features/service/screens/service_form_screen.dart';
+import 'package:flutter5/ui/features/service/screens/service_list_screen.dart';
+import 'package:flutter5/ui/features/support/screens/support_screen.dart';
+import 'package:flutter5/ui/features/application/screens/status_change_screen.dart';
+import 'package:flutter5/ui/features/application/screens/user_service_detail_screen.dart';
+import 'package:flutter5/ui/features/application/screens/user_service_list_screen.dart';
+import 'package:flutter5/ui/shared/app_theme.dart';
+import 'package:flutter5/ui/shared/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
-import 'domain/models/service.dart';
-import 'ui/features/gosuslugi/screens/link_gosuslugi_screen.dart';
-import 'ui/features/invoice/screens/invoice_add_screen.dart';
-import 'ui/features/invoice/screens/invoice_edit_screen.dart';
-import 'ui/features/profile/screens/profile_screen.dart';
-import 'ui/features/profile/screens/profile_screen_change.dart';
-import 'ui/features/service/screens/service_form_screen.dart';
-import 'ui/features/service/screens/service_list_screen.dart';
-import 'ui/shared/app_theme.dart';
-import 'ui/features/service/screens/search_service_screen.dart';
-import 'ui/features/support/screens/support_screen.dart';
-import 'ui/features/application/screens/status_change_screen.dart';
-import 'ui/features/application/screens/user_service_detail_screen.dart';
+import 'package:get_it/get_it.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
-  runApp(AppRoot());
+  runApp(const AppRoot());
 }
 
 class AppRoot extends StatelessWidget {
-  AppRoot({Key? key}) : super(key: key);
+  const AppRoot({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +133,63 @@ class AppRoot extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       routerConfig: _router,
+    );
+  }
+}
+
+class HomeScaffold extends StatefulWidget {
+  const HomeScaffold({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScaffold> createState() => _HomeScaffoldState();
+}
+
+class _HomeScaffoldState extends State<HomeScaffold> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
+
+    Widget _getBody() {
+      switch (_currentIndex) {
+        case 0:
+          return const ServiceListScreen();
+        case 1:
+          return const UserServiceListScreen();
+        case 2:
+          return const InvoiceListScreen();
+        case 3:
+          return const SupportScreen();
+        case 4:
+        default:
+          return const ProfileScreen();
+      }
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Госуслуги'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              authRemoteDataSource.logout();
+              GoRouter.of(context).go('/login');
+            },
+          ),
+        ],
+      ),
+      body: _getBody(),
+      bottomNavigationBar: AppBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ),
     );
   }
 }
