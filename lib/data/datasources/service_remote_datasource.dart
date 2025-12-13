@@ -1,3 +1,4 @@
+import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
 import 'package:flutter5/data/datasources/user_service_remote_datasource.dart';
 import 'package:flutter5/domain/models/service.dart';
 import 'package:flutter5/domain/models/user_service.dart';
@@ -53,8 +54,10 @@ class ServiceRemoteDataSource  {
     }).toList();
   }
 
-  void submitApplication({required Service service, required Map<String, String> formData}) {
+  void submitApplication({required Service service, required Map<String, String> formData}) async {
     final userServiceRemoteDataSource = GetIt.I<UserServiceRemoteDataSource>();
+    final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
+    final user = await authRemoteDataSource.getCurrentUser();
 
     final id = 'app_${DateTime.now().microsecondsSinceEpoch}';
     final entry = UserService(
@@ -65,6 +68,6 @@ class ServiceRemoteDataSource  {
       formData: Map<String, String>.from(formData),
     );
 
-    userServiceRemoteDataSource.addUserService(entry);
+    await userServiceRemoteDataSource.addUserService(entry);
   }
 }
