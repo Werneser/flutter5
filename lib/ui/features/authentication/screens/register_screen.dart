@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Имя',
                   border: OutlineInputBorder(),
                 ),
@@ -54,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _loginController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Логин',
                   border: OutlineInputBorder(),
                 ),
@@ -69,7 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Пароль',
                   border: OutlineInputBorder(),
                 ),
@@ -84,15 +84,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    await registerUseCase.execute(
-                      _nameController.text,
-                      _loginController.text,
-                      _passwordController.text,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Вы успешно зарегистрировались!')),
-                    );
-                    context.go('/');
+                    try {
+                      await registerUseCase.execute(
+                        _nameController.text,
+                        _loginController.text,
+                        _passwordController.text,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Вы успешно зарегистрировались!')),
+                      );
+                      context.go('/login');
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Ошибка регистрации: $e')),
+                      );
+                    }
                   }
                 },
                 child: const Text('Зарегистрироваться'),

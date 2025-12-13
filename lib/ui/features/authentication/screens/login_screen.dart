@@ -66,9 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    final success = loginUseCase.execute(
+                    final success = await loginUseCase.execute(
                       _loginController.text,
                       _passwordController.text,
                     );
