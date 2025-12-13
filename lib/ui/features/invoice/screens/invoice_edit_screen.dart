@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter5/data/datasources/invoice_remote_datasource.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
-import '../../domain/models/invoice.dart';
+import '../../../../domain/models/invoice.dart';
 
 class InvoiceEditScreen extends StatefulWidget {
   final Invoice invoice;

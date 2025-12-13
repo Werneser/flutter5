@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/domain/models/service.dart';
-import '../../domain/models/user_service.dart';
+import '../../../../domain/models/user_service.dart';
 
 class ServiceDetailScreen extends StatelessWidget {
   final UserService userService;

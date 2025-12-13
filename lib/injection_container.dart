@@ -14,7 +14,6 @@ import '../domain/usecases/register_usecase.dart';
 final getIt = GetIt.instance;
 
 Future<void> init() async {
-  // Data sources
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource());
   getIt.registerLazySingleton<InvoiceRemoteDataSource>(() => InvoiceRemoteDataSource());
   getIt.registerLazySingleton<LinkGosuslugiRemoteDataSource>(() => LinkGosuslugiRemoteDataSource());
@@ -23,7 +22,6 @@ Future<void> init() async {
   getIt.registerLazySingleton<SupportRemoteDataSource>(() => SupportRemoteDataSource());
   getIt.registerLazySingleton<UserServiceRemoteDataSource>(() => UserServiceRemoteDataSource());
 
-  // Use cases
   getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<GetInvoicesUseCase>(() => GetInvoicesUseCase(getIt<InvoiceRemoteDataSource>()));

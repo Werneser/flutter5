@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
-import 'package:flutter5/ui/widgets/bottom_nav_bar.dart';
+import 'package:flutter5/ui/features/invoice/screens/invoice_list_screen.dart';
+import 'package:flutter5/ui/shared/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
-import '../screens/invoice_list_screen.dart';
-import '../screens/profile_screen.dart';
-import '../screens/service_list_screen.dart';
-import '../screens/support_screen.dart';
-import '../screens/user_service_list_screen.dart';
+import '../features/profile/screens/profile_screen.dart';
+import '../features/service/screens/service_list_screen.dart';
+import '../features/support/screens/support_screen.dart';
+import '../features/application/screens/user_service_list_screen.dart';
 
 class HomeScaffold extends StatefulWidget {
   const HomeScaffold({Key? key}) : super(key: key);

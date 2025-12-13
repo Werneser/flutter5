@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/models/user_service.dart';
+import '../../../../domain/models/user_service.dart';
 
 class StatusChangeScreen extends StatelessWidget {
   final UserService service;

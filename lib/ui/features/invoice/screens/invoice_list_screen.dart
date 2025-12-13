@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/data/datasources/invoice_remote_datasource.dart';
+import 'package:flutter5/domain/models/invoice.dart';
+import 'package:flutter5/domain/usecases/get_invoices_usecase.dart';
+import 'package:flutter5/injection_container.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
-import '../../domain/usecases/get_invoices_usecase.dart';
-import '../../domain/models/invoice.dart';
-import '../../injection_container.dart';
+
 
 class InvoiceListScreen extends StatefulWidget {
   const InvoiceListScreen({super.key});

@@ -3,7 +3,7 @@ import 'package:flutter5/data/datasources/invoice_remote_datasource.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
-import '../../domain/models/invoice.dart';
+import '../../../../domain/models/invoice.dart';
 
 class InvoiceAddScreen extends StatefulWidget {
   const InvoiceAddScreen({super.key});
