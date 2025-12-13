@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter5/domain/models/UserProfile.dart';
-import '../../domain/models/service.dart';
-import '../../domain/models/user_service.dart';
+import 'domain/models/service.dart';
+import 'domain/models/user_service.dart';
 
 class AppState extends ChangeNotifier {
   int currentTabIndex;

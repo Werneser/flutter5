@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter5/data/state/app.dart';
+import 'package:flutter5/app.dart';
 
 
 class AppStateScope extends InheritedNotifier<AppState> {
