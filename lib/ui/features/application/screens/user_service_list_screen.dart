@@ -23,10 +23,7 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
   }
 
   void _openStatusChangeFor(UserService service) {
-    GoRouter.of(context).push<UserServiceStatus?>(
-      '/statusChange',
-      extra: service,
-    ).then((result) {
+    GoRouter.of(context).push<UserServiceStatus?>('/statusChange', extra: service).then((result) {
       if (result != null) {
         userServiceRemoteDataSource.updateUserServiceStatus(
           userServiceId: service.id,
@@ -39,8 +36,6 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final items = userServiceRemoteDataSource.getUserServicesByStatus(_status);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Мои заявки'),
@@ -64,31 +59,38 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
             ),
             const Divider(height: 1),
             Expanded(
-              child: UserServiceListView(
-                items: items,
-                onTapChangeStatus: (service) async {
-                  final result = await GoRouter.of(context).push<UserServiceStatus?>(
-                    '/statusChange',
-                    extra: service,
-                  );
-                  if (result != null) {
-                    userServiceRemoteDataSource.updateUserServiceStatus(
-                      userServiceId: service.id,
-                      status: result,
-                    );
-                    setState(() {});
+              child: FutureBuilder<List<UserService>>(
+                future: userServiceRemoteDataSource.getUserServicesByStatus(_status),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text('Ошибка загрузки данных'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('Нет заявок'));
                   }
-                },
-                onTap: (service) async {
-                  await GoRouter.of(context).push<void>(
-                    '/serviceDetail',
-                    extra: service,
+
+                  return UserServiceListView(
+                    items: snapshot.data!,
+                    onTapChangeStatus: (service) async {
+                      final result = await GoRouter.of(context).push<UserServiceStatus?>('/statusChange', extra: service);
+                      if (result != null) {
+                        await userServiceRemoteDataSource.updateUserServiceStatus(
+                          userServiceId: service.id,
+                          status: result,
+                        );
+                        setState(() {});
+                      }
+                    },
+                    onTap: (service) async {
+                      await GoRouter.of(context).push<void>('/serviceDetail', extra: service);
+                    },
+                    onSecondaryTap: (service) {
+                      _openStatusChangeFor(service);
+                    },
+                    onChangeStatus: (String value) {},
                   );
                 },
-                onSecondaryTap: (service) {
-                  _openStatusChangeFor(service);
-                },
-                onChangeStatus: (String value) {},
               ),
             ),
           ],

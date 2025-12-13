@@ -55,4 +55,36 @@ class UserService {
       formData: formData ?? this.formData,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'service': {
+        'id': service.id,
+        'title': service.title,
+        'description': service.description,
+        'category': service.category.index,
+        'requiredFields': service.requiredFields,
+      },
+      'appliedAt': appliedAt.toIso8601String(),
+      'status': status.index,
+      'formData': formData,
+    };
+  }
+
+  factory UserService.fromJson(Map<String, dynamic> json) {
+    return UserService(
+      id: json['id'],
+      service: Service(
+        id: json['service']['id'],
+        title: json['service']['title'],
+        description: json['service']['description'],
+        category: ServiceCategory.values[json['service']['category']],
+        requiredFields: List<String>.from(json['service']['requiredFields']),
+      ),
+      appliedAt: DateTime.parse(json['appliedAt']),
+      status: UserServiceStatus.values[json['status']],
+      formData: Map<String, String>.from(json['formData']),
+    );
+  }
 }
