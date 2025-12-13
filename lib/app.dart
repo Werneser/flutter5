@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter5/domain/models/UserProfile.dart';
+import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
+import 'package:flutter5/data/datasources/user_service_remote_datasource.dart';
+import 'package:flutter5/domain/models/userProfile.dart';
+import 'package:get_it/get_it.dart';
 import 'domain/models/service.dart';
 import 'domain/models/user_service.dart';
 
@@ -33,10 +36,11 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void submitApplication({
-    required Service service,
-    required Map<String, String> formData,
-  }) {
+  void submitApplication({required Service service, required Map<String, String> formData}) async {
+    final userServiceRemoteDataSource = GetIt.I<UserServiceRemoteDataSource>();
+    final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
+    final user = await authRemoteDataSource.getCurrentUser();
+
     final id = 'app_${DateTime.now().microsecondsSinceEpoch}';
     final entry = UserService(
       id: id,
@@ -45,8 +49,8 @@ class AppState extends ChangeNotifier {
       status: UserServiceStatus.submitted,
       formData: Map<String, String>.from(formData),
     );
-    myServices = [...myServices, entry];
-    notifyListeners();
+
+    await userServiceRemoteDataSource.addUserService(entry);
   }
 
   void updateUserServiceStatus({
