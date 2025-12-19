@@ -1,7 +1,7 @@
 import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
-import 'package:flutter5/data/datasources/user_service_remote_datasource.dart';
+import 'package:flutter5/data/datasources/appointment_remote_datasource.dart';
 import 'package:flutter5/domain/models/service.dart';
-import 'package:flutter5/domain/models/user_service.dart';
+import 'package:flutter5/domain/models/appointment.dart';
 import 'package:get_it/get_it.dart';
 
 class ServiceRemoteDataSource {
@@ -58,21 +58,23 @@ class ServiceRemoteDataSource {
     required Service service,
     required Map<String, String> formData,
   }) async {
-    final userServiceRemoteDataSource = GetIt.I<UserServiceRemoteDataSource>();
-    final login = await GetIt.I<AuthRemoteDataSource>().getCurrentUserLogin();
-    if (login == null) {
-      throw Exception('User not logged in');
+    final appointmentRemoteDataSource = GetIt.I<AppointmentRemoteDataSource>();
+    final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
+
+    final currentUserLogin = await authRemoteDataSource.getCurrentUserLogin();
+    if (currentUserLogin == null) {
+      throw Exception('Пользователь не авторизован');
     }
 
     final id = 'app_${DateTime.now().microsecondsSinceEpoch}';
-    final entry = UserService(
+    final entry = Appointment(
       id: id,
       service: service,
       appliedAt: DateTime.now(),
-      status: UserServiceStatus.submitted,
+      status: AppointmentStatus.submitted,
       formData: Map<String, String>.from(formData),
     );
 
-    await userServiceRemoteDataSource.addUserService(entry);
+    await appointmentRemoteDataSource.addAppointment(entry);
   }
 }
