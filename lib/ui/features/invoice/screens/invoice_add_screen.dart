@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/datasources/invoice_remote_datasource.dart';
+import 'package:flutter5/domain/models/invoice.dart';
+import 'package:flutter5/domain/usecases/add_invoices_usecase.dart';
+import 'package:flutter5/domain/usecases/get_invoices_usecase.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
-import '../../../../domain/models/invoice.dart';
 
 class InvoiceAddScreen extends StatefulWidget {
   const InvoiceAddScreen({super.key});
 
   @override
-  State<InvoiceAddScreen> createState() => _InvoiceAddScreenState(GetIt.I<InvoiceRemoteDataSource>());
+  State<InvoiceAddScreen> createState() => _InvoiceAddScreenState(GetIt.I<AddInvoiceUseCase>());
 }
 
 class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
+  final AddInvoiceUseCase addInvoiceUseCase;
   final _formKey = GlobalKey<FormState>();
   final _serviceNameController = TextEditingController();
   final _invoiceNumberController = TextEditingController();
@@ -20,9 +22,8 @@ class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
   final _issueAddressController = TextEditingController();
   final _destinationAddressController = TextEditingController();
   InvoiceStatus _status = InvoiceStatus.unpaid;
-  final InvoiceRemoteDataSource invoiceRemoteDataSource;
 
-  _InvoiceAddScreenState(this.invoiceRemoteDataSource);
+  _InvoiceAddScreenState(this.addInvoiceUseCase);
 
   @override
   void dispose() {
@@ -34,7 +35,7 @@ class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
     super.dispose();
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final invoice = Invoice(
         id: const Uuid().v4(),
@@ -46,8 +47,8 @@ class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
         destinationAddress: _destinationAddressController.text,
       );
 
-      invoiceRemoteDataSource.addInvoice(invoice);
-      GoRouter.of(context).pop();
+      await addInvoiceUseCase.execute(invoice);
+      if (mounted) GoRouter.of(context).pop();
     }
   }
 

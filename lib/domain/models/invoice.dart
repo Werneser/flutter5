@@ -22,4 +22,43 @@ class Invoice {
     required this.issueAddress,
     required this.destinationAddress,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'serviceName': serviceName,
+      'invoiceNumber': invoiceNumber,
+      'status': status.toString().split('.').last,
+      'amount': amount,
+      'issueAddress': issueAddress,
+      'destinationAddress': destinationAddress,
+    };
+  }
+
+  factory Invoice.fromJson(Map<String, dynamic> json) {
+    return Invoice(
+      id: json['id'],
+      serviceName: json['serviceName'],
+      invoiceNumber: json['invoiceNumber'],
+      status: _parseInvoiceStatus(json['status']),
+      amount: json['amount'],
+      issueAddress: json['issueAddress'],
+      destinationAddress: json['destinationAddress'],
+    );
+  }
+
+  static InvoiceStatus _parseInvoiceStatus(String status) {
+    switch (status) {
+      case 'unpaid':
+        return InvoiceStatus.unpaid;
+      case 'paid':
+        return InvoiceStatus.paid;
+      case 'overdue':
+        return InvoiceStatus.overdue;
+      default:
+        throw Exception('Unknown InvoiceStatus: $status');
+    }
+  }
 }
+
+

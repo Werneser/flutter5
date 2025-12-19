@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/datasources/invoice_remote_datasource.dart';
+import 'package:flutter5/domain/models/invoice.dart';
+import 'package:flutter5/domain/usecases/get_invoices_usecase.dart';
+import 'package:flutter5/domain/usecases/update_invoices_usecase.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
-import '../../../../domain/models/invoice.dart';
 
 class InvoiceEditScreen extends StatefulWidget {
   final Invoice invoice;
@@ -10,10 +11,11 @@ class InvoiceEditScreen extends StatefulWidget {
   const InvoiceEditScreen({super.key, required this.invoice});
 
   @override
-  State<InvoiceEditScreen> createState() => _InvoiceEditScreenState(GetIt.I<InvoiceRemoteDataSource>());
+  State<InvoiceEditScreen> createState() => _InvoiceEditScreenState(GetIt.I<UpdateInvoiceUseCase>());
 }
 
 class _InvoiceEditScreenState extends State<InvoiceEditScreen> {
+  final UpdateInvoiceUseCase updateInvoiceUseCase;
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _serviceNameController;
   late TextEditingController _invoiceNumberController;
@@ -21,9 +23,8 @@ class _InvoiceEditScreenState extends State<InvoiceEditScreen> {
   late TextEditingController _issueAddressController;
   late TextEditingController _destinationAddressController;
   late InvoiceStatus _status;
-  final InvoiceRemoteDataSource invoiceRemoteDataSource;
 
-  _InvoiceEditScreenState(this.invoiceRemoteDataSource);
+  _InvoiceEditScreenState(this.updateInvoiceUseCase);
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _InvoiceEditScreenState extends State<InvoiceEditScreen> {
     super.dispose();
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final updatedInvoice = Invoice(
         id: widget.invoice.id,
@@ -58,8 +59,8 @@ class _InvoiceEditScreenState extends State<InvoiceEditScreen> {
         destinationAddress: _destinationAddressController.text,
       );
 
-      invoiceRemoteDataSource.updateInvoice(updatedInvoice);
-      GoRouter.of(context).pop();
+      await updateInvoiceUseCase.execute(updatedInvoice);
+      if (mounted) GoRouter.of(context).pop();
     }
   }
 

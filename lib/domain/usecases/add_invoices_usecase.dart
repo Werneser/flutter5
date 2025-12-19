@@ -1,12 +1,12 @@
 import 'package:flutter5/data/datasources/invoice_local_datasource.dart';
 import 'package:flutter5/domain/models/invoice.dart';
 
-class GetInvoicesUseCase {
+class AddInvoiceUseCase {
   final InvoiceLocalDataSource invoiceLocalDataSource;
 
-  GetInvoicesUseCase(this.invoiceLocalDataSource);
+  AddInvoiceUseCase(this.invoiceLocalDataSource);
 
-  Future<List<Invoice>> execute() async {
-    return await invoiceLocalDataSource.getInvoices();
+  Future<void> execute(Invoice invoice) async {
+    await invoiceLocalDataSource.addInvoice(invoice);
   }
 }
