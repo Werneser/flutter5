@@ -28,7 +28,7 @@ class Invoice {
       'id': id,
       'serviceName': serviceName,
       'invoiceNumber': invoiceNumber,
-      'status': status.toString().split('.').last,
+      'status': status.index,
       'amount': amount,
       'issueAddress': issueAddress,
       'destinationAddress': destinationAddress,
@@ -40,25 +40,23 @@ class Invoice {
       id: json['id'],
       serviceName: json['serviceName'],
       invoiceNumber: json['invoiceNumber'],
-      status: _parseInvoiceStatus(json['status']),
-      amount: json['amount'],
+      status: _parseInvoiceStatusFromIndex(json['status']),
+      amount: (json['amount'] as num).toDouble(),
       issueAddress: json['issueAddress'],
       destinationAddress: json['destinationAddress'],
     );
   }
 
-  static InvoiceStatus _parseInvoiceStatus(String status) {
-    switch (status) {
-      case 'unpaid':
+  static InvoiceStatus _parseInvoiceStatusFromIndex(int statusIndex) {
+    switch (statusIndex) {
+      case 0:
         return InvoiceStatus.unpaid;
-      case 'paid':
+      case 1:
         return InvoiceStatus.paid;
-      case 'overdue':
+      case 2:
         return InvoiceStatus.overdue;
       default:
-        throw Exception('Unknown InvoiceStatus: $status');
+        throw Exception('Unknown InvoiceStatus index: $statusIndex');
     }
   }
 }
-
-

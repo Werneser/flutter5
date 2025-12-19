@@ -1,62 +1,72 @@
+import 'package:dio/dio.dart';
+import 'package:flutter5/data/datasources/Remote/auth_remote_datasource.dart';
 import 'package:flutter5/domain/models/invoice.dart';
 
-
 class InvoiceRemoteDataSource {
-  final List<Invoice> _invoices = [
-    Invoice(
-      id: '1',
-      serviceName: 'Оплата коммунальных услуг',
-      invoiceNumber: 'INV-2023-001',
-      status: InvoiceStatus.unpaid,
-      amount: 2500.0,
-      issueAddress: 'ул. Ленина, д. 10',
-      destinationAddress: 'ул. Ленина, д. 10, кв. 45',
-    ),
-    Invoice(
-      id: '2',
-      serviceName: 'Оплата электроэнергии',
-      invoiceNumber: 'INV-2023-002',
-      status: InvoiceStatus.overdue,
-      amount: 1800.0,
-      issueAddress: 'ул. Гагарина, д. 15',
-      destinationAddress: 'ул. Гагарина, д. 15, кв. 12',
-    ),
-    Invoice(
-      id: '3',
-      serviceName: 'Оплата за водоснабжение',
-      invoiceNumber: 'INV-2023-003',
-      status: InvoiceStatus.paid,
-      amount: 1200.0,
-      issueAddress: 'ул. Пушкина, д. 20',
-      destinationAddress: 'ул. Пушкина, д. 20, кв. 33',
-    ),
-    Invoice(
-      id: '4',
-      serviceName: 'Оплата за интернет',
-      invoiceNumber: 'INV-2023-004',
-      status: InvoiceStatus.unpaid,
-      amount: 800.0,
-      issueAddress: 'ул. Советская, д. 5',
-      destinationAddress: 'ул. Советская, д. 5, кв. 17',
-    ),
-  ];
+  final Dio _dio;
+  final AuthRemoteDataSource _authRemoteDataSource;
 
-  List<Invoice> getInvoices() {
-    return _invoices;
+  InvoiceRemoteDataSource(this._dio, this._authRemoteDataSource);
+
+  Future<String?> _getCurrentUserLogin() async {
+    return await _authRemoteDataSource.getCurrentUserLogin();
   }
 
-  void addInvoice(Invoice invoice) {
-    _invoices.add(invoice);
-  }
+  Future<List<Invoice>> getInvoices() async {
+    final login = await _getCurrentUserLogin();
+    if (login == null) {
+      return [];
+    }
 
-  void updateInvoice(Invoice updatedInvoice) {
-    final index = _invoices.indexWhere((invoice) => invoice.id == updatedInvoice.id);
-    if (index != -1) {
-      _invoices[index] = updatedInvoice;
+    try {
+      final response = await _dio.get(
+        '/invoices/user/$login',
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => Invoice.fromJson(json)).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      throw Exception('Failed to load invoices: $e');
     }
   }
 
-  void deleteInvoice(String id) {
-    _invoices.removeWhere((invoice) => invoice.id == id);
+
+  Future<void> updateInvoiceStatus({
+    required String invoiceId,
+    required InvoiceStatus status,
+  }) async {
+    try {
+      await _dio.patch(
+        '/invoices/$invoiceId/status',
+        queryParameters: {'status': status.index},
+      );
+    } catch (e) {
+      throw Exception('Failed to update invoice status: $e');
+    }
+  }
+
+  Future<void> addInvoice(Invoice invoice) async {
+    try {
+      final response = await _dio.post(
+        '/invoices',
+        data: {
+          'user': await _getCurrentUserLogin(),
+          'serviceName': invoice.serviceName,
+          'invoiceNumber': invoice.invoiceNumber,
+          'status': invoice.status.index,
+          'amount': invoice.amount,
+          'issueAddress': invoice.issueAddress,
+          'destinationAddress': invoice.destinationAddress,
+        },
+      );
+      if (response.statusCode != 201) {
+        throw Exception('Failed to create invoice: ${response.data}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create invoice: $e');
+    }
   }
 }
