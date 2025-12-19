@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/domain/models/invoice.dart';
 import 'package:flutter5/domain/usecases/add_invoices_usecase.dart';
-import 'package:flutter5/domain/usecases/get_invoices_usecase.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
@@ -47,8 +46,19 @@ class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
         destinationAddress: _destinationAddressController.text,
       );
 
-      await addInvoiceUseCase.execute(invoice);
-      if (mounted) GoRouter.of(context).pop();
+      try {
+        await addInvoiceUseCase.execute(invoice);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Квитанция успешно добавлена')),
+          );
+          GoRouter.of(context).pop();
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ошибка: $e')),
+        );
+      }
     }
   }
 
@@ -119,7 +129,7 @@ class _InvoiceAddScreenState extends State<InvoiceAddScreen> {
                 },
               ),
               DropdownButtonFormField<InvoiceStatus>(
-                initialValue: _status,
+                value: _status,
                 decoration: const InputDecoration(labelText: 'Статус'),
                 items: InvoiceStatus.values.map((status) {
                   return DropdownMenuItem(

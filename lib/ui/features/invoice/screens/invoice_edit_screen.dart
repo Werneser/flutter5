@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/domain/models/invoice.dart';
-import 'package:flutter5/domain/usecases/get_invoices_usecase.dart';
 import 'package:flutter5/domain/usecases/update_invoices_usecase.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
@@ -59,8 +58,19 @@ class _InvoiceEditScreenState extends State<InvoiceEditScreen> {
         destinationAddress: _destinationAddressController.text,
       );
 
-      await updateInvoiceUseCase.execute(updatedInvoice);
-      if (mounted) GoRouter.of(context).pop();
+      try {
+        await updateInvoiceUseCase.execute(updatedInvoice);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Квитанция успешно обновлена')),
+          );
+          GoRouter.of(context).pop();
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ошибка: $e')),
+        );
+      }
     }
   }
 
