@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
 import 'package:flutter5/domain/models/invoice.dart';
 import 'package:flutter5/domain/models/service.dart';
-import 'package:flutter5/domain/models/user_service.dart';
+import 'package:flutter5/domain/models/appointment.dart';
 import 'package:flutter5/injection_container.dart' as di;
 import 'package:flutter5/ui/features/authentication/screens/login_screen.dart';
 import 'package:flutter5/ui/features/authentication/screens/register_screen.dart';
@@ -17,8 +17,8 @@ import 'package:flutter5/ui/features/service/screens/service_form_screen.dart';
 import 'package:flutter5/ui/features/service/screens/service_list_screen.dart';
 import 'package:flutter5/ui/features/support/screens/support_screen.dart';
 import 'package:flutter5/ui/features/application/screens/status_change_screen.dart';
-import 'package:flutter5/ui/features/application/screens/user_service_detail_screen.dart';
-import 'package:flutter5/ui/features/application/screens/user_service_list_screen.dart';
+import 'package:flutter5/ui/features/application/screens/appointment_detail_screen.dart';
+import 'package:flutter5/ui/features/application/screens/appointment_list_screen.dart';
 import 'package:flutter5/ui/shared/app_theme.dart';
 import 'package:flutter5/ui/shared/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
@@ -65,14 +65,14 @@ class AppRoot extends StatelessWidget {
         GoRoute(
           path: '/serviceDetail',
           builder: (context, state) {
-            final service = state.extra as UserService;
+            final service = state.extra as Appointment;
             return ServiceDetailScreen(userService: service);
           },
         ),
         GoRoute(
           path: '/statusChange',
           builder: (context, state) {
-            final service = state.extra as UserService;
+            final service = state.extra as Appointment;
             return StatusChangeScreen(service: service);
           },
         ),

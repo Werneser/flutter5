@@ -5,8 +5,8 @@ import 'package:flutter5/data/datasources/link_gosuslugi_remote_datasource.dart'
 import 'package:flutter5/data/datasources/profile_remote_datasource.dart';
 import 'package:flutter5/data/datasources/service_remote_datasource.dart';
 import 'package:flutter5/data/datasources/support_remote_datasource.dart';
-import 'package:flutter5/data/datasources/user_service_remote_datasource.dart';
-import 'package:flutter5/data/datasources/user_service_local_datasource.dart';
+import 'package:flutter5/data/datasources/appointment_remote_datasource.dart';
+import 'package:flutter5/data/datasources/appointment_local_datasource.dart';
 import 'package:flutter5/domain/usecases/add_invoices_usecase.dart';
 import 'package:flutter5/domain/usecases/delete_invoices_usecase.dart';
 import 'package:flutter5/domain/usecases/update_invoices_usecase.dart';
@@ -28,8 +28,8 @@ Future<void> init() async {
   getIt.registerSingleton<Dio>(dio);
   getIt.registerSingleton<InvoiceLocalDataSource>(InvoiceLocalDataSource());
   getIt.registerLazySingleton<FlutterSecureStorage>(() => storage);
-  getIt.registerLazySingleton<UserServiceLocalDataSource>(() => UserServiceLocalDataSource(getIt<FlutterSecureStorage>()),);
-  getIt.registerLazySingleton<UserServiceRemoteDataSource>(() => UserServiceRemoteDataSource(getIt<UserServiceLocalDataSource>(), getIt<AuthRemoteDataSource>(),),);
+  getIt.registerLazySingleton<AppointmentLocalDataSource>(() => AppointmentLocalDataSource(getIt<FlutterSecureStorage>()),);
+  getIt.registerLazySingleton<AppointmentRemoteDataSource>(() => AppointmentRemoteDataSource(dio, getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource(dio, storage));
   getIt.registerLazySingleton<LinkGosuslugiRemoteDataSource>(() => LinkGosuslugiRemoteDataSource());
   getIt.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSource());
