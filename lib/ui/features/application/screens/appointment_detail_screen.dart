@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/domain/models/service.dart';
-import '../../../../domain/models/user_service.dart';
+import '../../../../domain/models/appointment.dart';
 
 class ServiceDetailScreen extends StatelessWidget {
-  final UserService userService;
+  final Appointment userService;
 
   const ServiceDetailScreen({Key? key, required this.userService}) : super(key: key);
 

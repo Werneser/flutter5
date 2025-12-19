@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/datasources/user_service_remote_datasource.dart';
-import 'package:flutter5/domain/models/user_service.dart';
+import 'package:flutter5/data/datasources/appointment_remote_datasource.dart';
+import 'package:flutter5/domain/models/appointment.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
-import '../widgets/user_service_list_view.dart';
+import '../widgets/appointment_list_view.dart';
 
 class UserServiceListScreen extends StatefulWidget {
   const UserServiceListScreen({super.key});
 
   @override
-  State<UserServiceListScreen> createState() => _UserServiceListScreenState(GetIt.I<UserServiceRemoteDataSource>());
+  State<UserServiceListScreen> createState() => _UserServiceListScreenState(GetIt.I<AppointmentRemoteDataSource>());
 }
 
 class _UserServiceListScreenState extends State<UserServiceListScreen> {
-  UserServiceStatus? _status;
-  final UserServiceRemoteDataSource userServiceRemoteDataSource;
+  AppointmentStatus? _status;
+  final AppointmentRemoteDataSource userServiceRemoteDataSource;
 
   _UserServiceListScreenState(this.userServiceRemoteDataSource);
 
@@ -22,11 +22,11 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
     GoRouter.of(context).go('/profile');
   }
 
-  void _openStatusChangeFor(UserService service) {
-    GoRouter.of(context).push<UserServiceStatus?>('/statusChange', extra: service).then((result) {
+  void _openStatusChangeFor(Appointment service) {
+    GoRouter.of(context).push<AppointmentStatus?>('/statusChange', extra: service).then((result) {
       if (result != null) {
-        userServiceRemoteDataSource.updateUserServiceStatus(
-          userServiceId: service.id,
+        userServiceRemoteDataSource.updateAppointmentStatus(
+          appointmentId: service.id,
           status: result,
         );
         setState(() {});
@@ -59,24 +59,24 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
             ),
             const Divider(height: 1),
             Expanded(
-              child: FutureBuilder<List<UserService>>(
-                future: userServiceRemoteDataSource.getUserServicesByStatus(_status),
+              child: FutureBuilder<List<Appointment>>(
+                future: userServiceRemoteDataSource.getAppointmentsByStatus(_status),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return const Center(child: Text('Ошибка загрузки данных'));
+                    return Center(child: Text('Ошибка загрузки данных: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('Нет заявок'));
+                    return const Center(child: Text('Нет заявок с выбранным статусом'));
                   }
 
                   return UserServiceListView(
                     items: snapshot.data!,
                     onTapChangeStatus: (service) async {
-                      final result = await GoRouter.of(context).push<UserServiceStatus?>('/statusChange', extra: service);
+                      final result = await GoRouter.of(context).push<AppointmentStatus?>('/statusChange', extra: service);
                       if (result != null) {
-                        await userServiceRemoteDataSource.updateUserServiceStatus(
-                          userServiceId: service.id,
+                        await userServiceRemoteDataSource.updateAppointmentStatus(
+                          appointmentId: service.id,
                           status: result,
                         );
                         setState(() {});
@@ -101,8 +101,8 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
 }
 
 class _StatusFilter extends StatelessWidget {
-  final UserServiceStatus? selected;
-  final ValueChanged<UserServiceStatus?> onSelected;
+  final AppointmentStatus? selected;
+  final ValueChanged<AppointmentStatus?> onSelected;
 
   const _StatusFilter({
     required this.selected,
@@ -111,7 +111,7 @@ class _StatusFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statuses = [null, ...UserServiceStatus.values];
+    final statuses = [null, ...AppointmentStatus.values];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

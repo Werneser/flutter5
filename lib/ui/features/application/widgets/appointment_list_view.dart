@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../../domain/models/user_service.dart';
+import '../../../../domain/models/appointment.dart';
 
 class UserServiceListView extends StatelessWidget {
-  final List<UserService> items;
+  final List<Appointment> items;
   final ValueChanged<String> onChangeStatus;
-  final ValueChanged<UserService> onTap;
-  final ValueChanged<UserService> onTapChangeStatus;
-  final void Function(UserService)? onSecondaryTap;
+  final ValueChanged<Appointment> onTap;
+  final ValueChanged<Appointment> onTapChangeStatus;
+  final void Function(Appointment)? onSecondaryTap;
   const UserServiceListView({
     required this.items,
     required this.onChangeStatus,

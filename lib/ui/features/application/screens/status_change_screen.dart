@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../../domain/models/user_service.dart';
+import '../../../../domain/models/appointment.dart';
 
 class StatusChangeScreen extends StatelessWidget {
-  final UserService service;
+  final Appointment service;
 
   const StatusChangeScreen({super.key, required this.service});
 
   @override
   Widget build(BuildContext context) {
     final current = service.status;
-    final statuses = UserServiceStatus.values;
+    final statuses = AppointmentStatus.values;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +44,7 @@ class StatusChangeScreen extends StatelessWidget {
 }
 
 class _StatusChip extends StatelessWidget {
-  final UserServiceStatus status;
+  final AppointmentStatus status;
   final bool isSelected;
   final VoidCallback onSelected;
 
@@ -58,15 +58,15 @@ class _StatusChip extends StatelessWidget {
   Color _color(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     switch (status) {
-      case UserServiceStatus.submitted:
+      case AppointmentStatus.submitted:
         return cs.secondary;
-      case UserServiceStatus.inReview:
+      case AppointmentStatus.inReview:
         return cs.tertiary;
-      case UserServiceStatus.approved:
+      case AppointmentStatus.approved:
         return Colors.green;
-      case UserServiceStatus.rejected:
+      case AppointmentStatus.rejected:
         return Colors.red;
-      case UserServiceStatus.needsInfo:
+      case AppointmentStatus.needsInfo:
         return Colors.amber;
     }
   }
