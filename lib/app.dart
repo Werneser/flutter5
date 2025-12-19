@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
-import 'package:flutter5/data/datasources/appointment_remote_datasource.dart';
+import 'package:flutter5/data/datasources/Remote/auth_remote_datasource.dart';
+import 'package:flutter5/data/datasources/Remote/appointment_remote_datasource.dart';
 import 'package:flutter5/domain/models/userProfile.dart';
 import 'package:get_it/get_it.dart';
 import 'domain/models/service.dart';
