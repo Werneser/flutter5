@@ -15,6 +15,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
   final RegisterUseCase registerUseCase;
 
   _RegisterScreenState(this.registerUseCase);
@@ -24,6 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _nameController.dispose();
     _loginController.dispose();
     _passwordController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -67,6 +69,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Номер телефона',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Пожалуйста, введите номер телефона';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
                 controller: _passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
@@ -89,6 +105,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _nameController.text,
                         _loginController.text,
                         _passwordController.text,
+                        _phoneController.text,
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Вы успешно зарегистрировались!')),
