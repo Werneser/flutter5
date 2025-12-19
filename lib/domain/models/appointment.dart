@@ -1,6 +1,6 @@
 import 'service.dart';
 
-enum UserServiceStatus {
+enum AppointmentStatus {
   submitted,
   inReview,
   approved,
@@ -8,31 +8,31 @@ enum UserServiceStatus {
   needsInfo,
 }
 
-extension UserServiceStatusX on UserServiceStatus {
+extension AppointmentStatusX on AppointmentStatus {
   String get label {
     switch (this) {
-      case UserServiceStatus.submitted:
+      case AppointmentStatus.submitted:
         return 'Отправлено';
-      case UserServiceStatus.inReview:
+      case AppointmentStatus.inReview:
         return 'В обработке';
-      case UserServiceStatus.approved:
+      case AppointmentStatus.approved:
         return 'Одобрено';
-      case UserServiceStatus.rejected:
+      case AppointmentStatus.rejected:
         return 'Отклонено';
-      case UserServiceStatus.needsInfo:
+      case AppointmentStatus.needsInfo:
         return 'Требуются данные';
     }
   }
 }
 
-class UserService {
+class Appointment {
   final String id;
   final Service service;
   final DateTime appliedAt;
-  final UserServiceStatus status;
+  final AppointmentStatus status;
   final Map<String, String> formData;
 
-  const UserService({
+  const Appointment({
     required this.id,
     required this.service,
     required this.appliedAt,
@@ -40,14 +40,14 @@ class UserService {
     this.formData = const {},
   });
 
-  UserService copyWith({
+  Appointment copyWith({
     String? id,
     Service? service,
     DateTime? appliedAt,
-    UserServiceStatus? status,
+    AppointmentStatus? status,
     Map<String, String>? formData,
   }) {
-    return UserService(
+    return Appointment(
       id: id ?? this.id,
       service: service ?? this.service,
       appliedAt: appliedAt ?? this.appliedAt,
@@ -72,8 +72,8 @@ class UserService {
     };
   }
 
-  factory UserService.fromJson(Map<String, dynamic> json) {
-    return UserService(
+  factory Appointment.fromJson(Map<String, dynamic> json) {
+    return Appointment(
       id: json['id'],
       service: Service(
         id: json['service']['id'],
@@ -83,7 +83,7 @@ class UserService {
         requiredFields: List<String>.from(json['service']['requiredFields']),
       ),
       appliedAt: DateTime.parse(json['appliedAt']),
-      status: UserServiceStatus.values[json['status']],
+      status: AppointmentStatus.values[json['status']],
       formData: Map<String, String>.from(json['formData']),
     );
   }
