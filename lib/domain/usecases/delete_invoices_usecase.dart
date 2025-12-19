@@ -1,11 +1,15 @@
-import 'package:flutter5/data/datasources/Local/invoice_local_datasource.dart';
+import 'package:flutter5/data/datasources/Remote/invoice_remote_datasource.dart';
+import 'package:flutter5/domain/models/invoice.dart';
 
 class DeleteInvoiceUseCase {
-  final InvoiceLocalDataSource invoiceLocalDataSource;
+  final InvoiceRemoteDataSource invoiceRemoteDataSource;
 
-  DeleteInvoiceUseCase(this.invoiceLocalDataSource);
+  DeleteInvoiceUseCase(this.invoiceRemoteDataSource);
 
-  Future<void> execute(String id) async {
-    await invoiceLocalDataSource.deleteInvoice(id);
+  Future<void> execute(String invoiceId) async {
+    await invoiceRemoteDataSource.updateInvoiceStatus(
+      invoiceId: invoiceId,
+      status: InvoiceStatus.overdue,
+    );
   }
 }
