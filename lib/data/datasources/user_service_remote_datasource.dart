@@ -8,31 +8,38 @@ class UserServiceRemoteDataSource {
 
   UserServiceRemoteDataSource(this.localDataSource, this.authRemoteDataSource);
 
-  Future<String> _getCurrentUserId() async {
-    final user = await authRemoteDataSource.getCurrentUser();
-    return user?.id ?? '';
+  Future<String?> _getCurrentUserLogin() async {
+    return await authRemoteDataSource.getCurrentUserLogin();
   }
 
   Future<List<UserService>> getUserServicesByStatus(UserServiceStatus? status) async {
-    final userId = await _getCurrentUserId();
-    return localDataSource.getUserServicesByStatus(userId, status);
+    final login = await _getCurrentUserLogin();
+    if (login == null) {
+      return [];
+    }
+    return localDataSource.getUserServicesByStatus(login, status);
   }
 
   Future<void> updateUserServiceStatus({
     required String userServiceId,
     required UserServiceStatus status,
   }) async {
-    final userId = await _getCurrentUserId();
+    final login = await _getCurrentUserLogin();
+    if (login == null) {
+      throw Exception('User not logged in');
+    }
     return localDataSource.updateUserServiceStatus(
-      userId: userId,
+      userId: login,
       userServiceId: userServiceId,
       status: status,
     );
   }
 
   Future<void> addUserService(UserService userService) async {
-    final userId = await _getCurrentUserId();
-    return localDataSource.addUserService(userId, userService);
+    final login = await _getCurrentUserLogin();
+    if (login == null) {
+      throw Exception('User not logged in');
+    }
+    return localDataSource.addUserService(login, userService);
   }
 }
-

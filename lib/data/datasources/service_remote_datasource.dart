@@ -4,7 +4,7 @@ import 'package:flutter5/domain/models/service.dart';
 import 'package:flutter5/domain/models/user_service.dart';
 import 'package:get_it/get_it.dart';
 
-class ServiceRemoteDataSource  {
+class ServiceRemoteDataSource {
   final List<Service> _services = [
     Service(
       id: 'svc_tr_1',
@@ -54,10 +54,15 @@ class ServiceRemoteDataSource  {
     }).toList();
   }
 
-  void submitApplication({required Service service, required Map<String, String> formData}) async {
+  Future<void> submitApplication({
+    required Service service,
+    required Map<String, String> formData,
+  }) async {
     final userServiceRemoteDataSource = GetIt.I<UserServiceRemoteDataSource>();
-    final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
-    final user = await authRemoteDataSource.getCurrentUser();
+    final login = await GetIt.I<AuthRemoteDataSource>().getCurrentUserLogin();
+    if (login == null) {
+      throw Exception('User not logged in');
+    }
 
     final id = 'app_${DateTime.now().microsecondsSinceEpoch}';
     final entry = UserService(
