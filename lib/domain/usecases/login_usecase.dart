@@ -6,7 +6,7 @@ class LoginUseCase {
 
   LoginUseCase(this.authRemoteDataSource);
 
-  Future<bool> execute(String login, String password) async {
+  Future<String?> execute(String login, String password) async {
     return await authRemoteDataSource.loginUser(login, password);
   }
 }
