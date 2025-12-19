@@ -36,10 +36,17 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void submitApplication({required Service service, required Map<String, String> formData}) async {
+  Future<void> submitApplication({
+    required Service service,
+    required Map<String, String> formData,
+  }) async {
     final userServiceRemoteDataSource = GetIt.I<UserServiceRemoteDataSource>();
     final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
-    final user = await authRemoteDataSource.getCurrentUser();
+
+    final currentUserLogin = await authRemoteDataSource.getCurrentUserLogin();
+    if (currentUserLogin == null) {
+      throw Exception('Пользователь не авторизован');
+    }
 
     final id = 'app_${DateTime.now().microsecondsSinceEpoch}';
     final entry = UserService(
@@ -52,6 +59,7 @@ class AppState extends ChangeNotifier {
 
     await userServiceRemoteDataSource.addUserService(entry);
   }
+
 
   void updateUserServiceStatus({
     required String userServiceId,

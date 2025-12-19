@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter5/data/datasources/auth_remote_datasource.dart';
 import 'package:flutter5/data/datasources/invoice_local_datasource.dart';
 import 'package:flutter5/data/datasources/link_gosuslugi_remote_datasource.dart';
@@ -20,15 +21,16 @@ import '../domain/usecases/register_usecase.dart';
 final getIt = GetIt.instance;
 
 Future<void> init() async {
+  final dio = Dio(BaseOptions(baseUrl: 'http://127.0.0.1:8080'));
   final storage = const FlutterSecureStorage();
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);
-
+  getIt.registerSingleton<Dio>(dio);
   getIt.registerSingleton<InvoiceLocalDataSource>(InvoiceLocalDataSource());
   getIt.registerLazySingleton<FlutterSecureStorage>(() => storage);
   getIt.registerLazySingleton<UserServiceLocalDataSource>(() => UserServiceLocalDataSource(getIt<FlutterSecureStorage>()),);
   getIt.registerLazySingleton<UserServiceRemoteDataSource>(() => UserServiceRemoteDataSource(getIt<UserServiceLocalDataSource>(), getIt<AuthRemoteDataSource>(),),);
-  getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource(storage));
+  getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource(dio, storage));
   getIt.registerLazySingleton<LinkGosuslugiRemoteDataSource>(() => LinkGosuslugiRemoteDataSource());
   getIt.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSource());
   getIt.registerLazySingleton<ServiceRemoteDataSource>(() => ServiceRemoteDataSource());
