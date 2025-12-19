@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter5/data/datasources/Remote/auth_remote_datasource.dart';
 import 'package:flutter5/data/datasources/Local/invoice_local_datasource.dart';
-import 'package:flutter5/data/datasources/Remote/link_gosuslugi_remote_datasource.dart';
-import 'package:flutter5/data/datasources/Remote/profile_remote_datasource.dart';
+import 'package:flutter5/data/datasources/Local/link_gosuslugi_local_datasource.dart';
+import 'package:flutter5/data/datasources/Local/profile_local_datasource.dart';
+import 'package:flutter5/data/datasources/Remote/invoice_remote_datasource.dart';
 import 'package:flutter5/data/datasources/Remote/service_remote_datasource.dart';
-import 'package:flutter5/data/datasources/Remote/support_remote_datasource.dart';
+import 'package:flutter5/data/datasources/Local/support_local_datasource.dart';
 import 'package:flutter5/data/datasources/Remote/appointment_remote_datasource.dart';
 import 'package:flutter5/data/datasources/Local/appointment_local_datasource.dart';
 import 'package:flutter5/domain/usecases/add_invoices_usecase.dart';
@@ -31,6 +32,7 @@ Future<void> init() async {
   getIt.registerLazySingleton<AppointmentLocalDataSource>(() => AppointmentLocalDataSource(getIt<FlutterSecureStorage>()),);
   getIt.registerLazySingleton<AppointmentRemoteDataSource>(() => AppointmentRemoteDataSource(dio, getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource(dio, storage));
+  getIt.registerLazySingleton<InvoiceRemoteDataSource>(() => InvoiceRemoteDataSource(dio, getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<LinkGosuslugiRemoteDataSource>(() => LinkGosuslugiRemoteDataSource());
   getIt.registerLazySingleton<ProfileRemoteDataSource>(() => ProfileRemoteDataSource());
   getIt.registerLazySingleton<ServiceRemoteDataSource>(() => ServiceRemoteDataSource());
@@ -38,8 +40,8 @@ Future<void> init() async {
 
   getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(getIt<AuthRemoteDataSource>()));
-  getIt.registerLazySingleton<GetInvoicesUseCase>(() => GetInvoicesUseCase(getIt<InvoiceLocalDataSource>()));
-  getIt.registerLazySingleton<AddInvoiceUseCase>(() => AddInvoiceUseCase(getIt<InvoiceLocalDataSource>()));
-  getIt.registerLazySingleton<UpdateInvoiceUseCase>(() => UpdateInvoiceUseCase(getIt<InvoiceLocalDataSource>()));
-  getIt.registerLazySingleton<DeleteInvoiceUseCase>(() => DeleteInvoiceUseCase(getIt<InvoiceLocalDataSource>()));
+  getIt.registerLazySingleton<GetInvoicesUseCase>(() => GetInvoicesUseCase(getIt<InvoiceRemoteDataSource>()));
+  getIt.registerLazySingleton<AddInvoiceUseCase>(() => AddInvoiceUseCase(getIt<InvoiceRemoteDataSource>()));
+  getIt.registerLazySingleton<UpdateInvoiceUseCase>(() => UpdateInvoiceUseCase(getIt<InvoiceRemoteDataSource>()));
+  getIt.registerLazySingleton<DeleteInvoiceUseCase>(() => DeleteInvoiceUseCase(getIt<InvoiceRemoteDataSource>()));
 }

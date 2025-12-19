@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/datasources/Remote/support_remote_datasource.dart';
+import 'package:flutter5/data/datasources/Local/support_local_datasource.dart';
 import 'package:get_it/get_it.dart';
 
 class SupportScreen extends StatefulWidget {
