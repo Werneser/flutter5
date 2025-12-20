@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/data/datasources/Local/profile_local_datasource.dart';
+import 'package:flutter5/domain/models/EmailReputationService.dart';
+import 'package:flutter5/domain/models/PhoneIntelligenceService.dart';
 import 'package:flutter5/domain/models/userProfile.dart';
 import 'package:get_it/get_it.dart';
 
@@ -62,20 +64,49 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
 
     setState(() => _saving = true);
     try {
+      final email = _emailCtrl.text.trim();
+      // final emailReputationService = GetIt.I<EmailReputationService>();
+      // final isEmailValid = await emailReputationService.checkEmailReputation(email);
+      //
+      // if (!isEmailValid) {
+      //   if (!mounted) return;
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(content: Text('Email недействителен.')),
+      //   );
+      //   return;
+      // }
+      //
+      final phone = _phoneCtrl.text.trim();
+      // final phoneIntelligenceService = GetIt.I<PhoneIntelligenceService>();
+      // final isPhoneValid = await phoneIntelligenceService.checkPhone(phone);
+      //
+      // if (!isPhoneValid) {
+      //   if (!mounted) return;
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(content: Text('Номер телефона недействителен.')),
+      //   );
+      //   return;
+      // }
+
       final updated = UserProfile(
         fullName: _nameCtrl.text.trim(),
         passport: _passportCtrl.text.trim(),
         snils: _snilsCtrl.text.trim(),
-        phone: _phoneCtrl.text.trim(),
-        email: _emailCtrl.text.trim(),
+        phone: phone,
+        email: email,
       );
 
       profileRemoteDataSource.updateProfile(updated);
-      if (mounted) Navigator.of(context).pop(true);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Профиль успешно обновлён!')),
+        );
+        Navigator.of(context).pop(true);
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Не удалось сохранить: $e')),
+        SnackBar(content: Text('Ошибка: $e')),
       );
     } finally {
       if (mounted) setState(() => _saving = false);
