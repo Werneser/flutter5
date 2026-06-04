@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter5/data/datasources/Remote/auth_remote_datasource.dart';
 import 'package:flutter5/data/datasources/Local/invoice_local_datasource.dart';
 import 'package:flutter5/data/datasources/Local/link_gosuslugi_local_datasource.dart';
@@ -22,7 +25,17 @@ import '../domain/usecases/register_usecase.dart';
 final getIt = GetIt.instance;
 
 Future<void> init() async {
-  final dio = Dio(BaseOptions(baseUrl: 'http://127.0.0.1:8080'));
+  String baseUrl;
+  if (kIsWeb) {
+    baseUrl = 'http://127.0.0.1:8080';
+  } else if (Platform.isAndroid) {
+    baseUrl = 'http://10.0.2.2:8080';
+  } else if (Platform.isIOS) {
+    baseUrl = 'http://localhost:8080';
+  } else {
+    baseUrl = 'http://127.0.0.1:8080';
+  }
+  final dio = Dio(BaseOptions(baseUrl: baseUrl));
   final storage = const FlutterSecureStorage();
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);

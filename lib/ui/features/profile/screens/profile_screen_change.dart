@@ -20,12 +20,12 @@ class ProfileScreenChange extends StatefulWidget {
   final String initialEmail;
 
   @override
-  State<ProfileScreenChange> createState() => _ProfileScreenChangeState(GetIt.I<ProfileRemoteDataSource>());
+  State<ProfileScreenChange> createState() => _ProfileScreenChangeState();
 }
 
 class _ProfileScreenChangeState extends State<ProfileScreenChange> {
   final _formKey = GlobalKey<FormState>();
-  final ProfileRemoteDataSource profileRemoteDataSource;
+  late final ProfileRemoteDataSource profileRemoteDataSource;
 
   late final TextEditingController _nameCtrl;
   late final TextEditingController _passportCtrl;
@@ -35,7 +35,9 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
 
   bool _saving = false;
 
-  _ProfileScreenChangeState(this.profileRemoteDataSource);
+  _ProfileScreenChangeState() {
+    profileRemoteDataSource = GetIt.I<ProfileRemoteDataSource>();
+  }
 
   @override
   void initState() {
