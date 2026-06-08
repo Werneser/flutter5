@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter5/data/datasources/Local/profile_local_datasource.dart';
+import 'package:flutter5/data/datasources/Remote/profile_remote_datasource.dart';
 import 'package:flutter5/domain/models/userProfile.dart';
 import 'package:get_it/get_it.dart';
 
 class ProfileScreenChange extends StatefulWidget {
+  final UserProfile initialProfile;
+
   const ProfileScreenChange({
     super.key,
-    required this.initialFullName,
-    required this.initialPassport,
-    required this.initialSnils,
-    required this.initialPhone,
-    required this.initialEmail,
+    required this.initialProfile,
   });
-
-  final String initialFullName;
-  final String initialPassport;
-  final String initialSnils;
-  final String initialPhone;
-  final String initialEmail;
 
   @override
   State<ProfileScreenChange> createState() => _ProfileScreenChangeState();
@@ -25,8 +17,6 @@ class ProfileScreenChange extends StatefulWidget {
 
 class _ProfileScreenChangeState extends State<ProfileScreenChange> {
   final _formKey = GlobalKey<FormState>();
-  late final ProfileRemoteDataSource profileRemoteDataSource;
-
   late final TextEditingController _nameCtrl;
   late final TextEditingController _passportCtrl;
   late final TextEditingController _snilsCtrl;
@@ -35,18 +25,14 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
 
   bool _saving = false;
 
-  _ProfileScreenChangeState() {
-    profileRemoteDataSource = GetIt.I<ProfileRemoteDataSource>();
-  }
-
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(text: widget.initialFullName);
-    _passportCtrl = TextEditingController(text: widget.initialPassport);
-    _snilsCtrl = TextEditingController(text: widget.initialSnils);
-    _phoneCtrl = TextEditingController(text: widget.initialPhone);
-    _emailCtrl = TextEditingController(text: widget.initialEmail);
+    _nameCtrl = TextEditingController(text: widget.initialProfile.fullName ?? '');
+    _passportCtrl = TextEditingController(text: widget.initialProfile.passport ?? '');
+    _snilsCtrl = TextEditingController(text: widget.initialProfile.snils ?? '');
+    _phoneCtrl = TextEditingController(text: widget.initialProfile.phone ?? '');
+    _emailCtrl = TextEditingController(text: widget.initialProfile.email ?? '');
   }
 
   @override
@@ -64,7 +50,10 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
 
     setState(() => _saving = true);
     try {
+      final profileRemoteDataSource = GetIt.I<ProfileRemoteDataSource>();
+
       final updated = UserProfile(
+        userId: widget.initialProfile.userId,
         fullName: _nameCtrl.text.trim(),
         passport: _passportCtrl.text.trim(),
         snils: _snilsCtrl.text.trim(),
@@ -72,12 +61,21 @@ class _ProfileScreenChangeState extends State<ProfileScreenChange> {
         email: _emailCtrl.text.trim(),
       );
 
-      profileRemoteDataSource.updateProfile(updated);
-      if (mounted) Navigator.of(context).pop(true);
+      final success = await profileRemoteDataSource.updateProfile(updated);
+
+      if (mounted) {
+        if (success) {
+          Navigator.of(context).pop(true);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Не удалось сохранить профиль')),
+          );
+        }
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Не удалось сохранить: $e')),
+        SnackBar(content: Text('Ошибка: $e')),
       );
     } finally {
       if (mounted) setState(() => _saving = false);

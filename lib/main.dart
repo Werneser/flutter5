@@ -3,6 +3,8 @@ import 'package:flutter5/data/datasources/Remote/auth_remote_datasource.dart';
 import 'package:flutter5/domain/models/invoice.dart';
 import 'package:flutter5/domain/models/service.dart';
 import 'package:flutter5/domain/models/appointment.dart';
+import 'package:flutter5/domain/models/userProfile.dart';
+import 'package:flutter5/domain/models/user.dart';
 import 'package:flutter5/injection_container.dart' as di;
 import 'package:flutter5/ui/features/authentication/screens/login_screen.dart';
 import 'package:flutter5/ui/features/authentication/screens/register_screen.dart';
@@ -19,6 +21,7 @@ import 'package:flutter5/ui/features/support/screens/support_screen.dart';
 import 'package:flutter5/ui/features/application/screens/status_change_screen.dart';
 import 'package:flutter5/ui/features/application/screens/appointment_detail_screen.dart';
 import 'package:flutter5/ui/features/application/screens/appointment_list_screen.dart';
+import 'package:flutter5/ui/features/application/screens/employee_appointment_list_screen.dart';
 import 'package:flutter5/ui/shared/app_theme.dart';
 import 'package:flutter5/ui/shared/widgets/bottom_nav_bar.dart';
 import 'package:go_router/go_router.dart';
@@ -59,6 +62,10 @@ class AppRoot extends StatelessWidget {
           builder: (context, state) => const UserServiceListScreen(),
         ),
         GoRoute(
+          path: '/employeeServiceList',
+          builder: (context, state) => const EmployeeAppointmentListScreen(),
+        ),
+        GoRoute(
           path: '/searchService',
           builder: (context, state) => SearchServiceScreen(initialQuery: state.extra as String? ?? ''),
         ),
@@ -90,13 +97,9 @@ class AppRoot extends StatelessWidget {
         GoRoute(
           path: '/profile/edit',
           builder: (context, state) {
-            final extra = state.extra as Map<String, String>?;
+            final profile = state.extra as UserProfile;
             return ProfileScreenChange(
-              initialFullName: extra?['fullName'] ?? '',
-              initialPassport: extra?['passport'] ?? '',
-              initialSnils: extra?['snils'] ?? '',
-              initialPhone: extra?['phone'] ?? '',
-              initialEmail: extra?['email'] ?? '',
+              initialProfile: profile,
             );
           },
         ),
@@ -146,32 +149,77 @@ class HomeScaffold extends StatefulWidget {
 
 class _HomeScaffoldState extends State<HomeScaffold> {
   int _currentIndex = 0;
+  UserRole _userRole = UserRole.user;
+  bool _isLoadingRole = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserRole();
+  }
+
+  Future<void> _loadUserRole() async {
+    final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
+    final role = await authRemoteDataSource.getUserRole();
+    if (mounted) {
+      setState(() {
+        _userRole = role;
+        _isLoadingRole = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingRole) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final authRemoteDataSource = GetIt.I<AuthRemoteDataSource>();
+    final isEmployee = _userRole == UserRole.employee;
 
     Widget _getBody() {
-      switch (_currentIndex) {
-        case 0:
-          return const ServiceListScreen();
-        case 1:
-          return const UserServiceListScreen();
-        case 2:
-          return const InvoiceListScreen();
-        case 3:
-          return const SupportScreen();
-        case 4:
-        default:
-          return const ProfileScreen();
+      if (isEmployee) {
+        switch (_currentIndex) {
+          case 0:
+            return const EmployeeAppointmentListScreen();
+          case 1:
+            return const InvoiceListScreen();
+          default:
+            return const EmployeeAppointmentListScreen();
+        }
+      } else {
+        switch (_currentIndex) {
+          case 0:
+            return const ServiceListScreen();
+          case 1:
+            return const UserServiceListScreen();
+          case 2:
+            return const InvoiceListScreen();
+          case 3:
+            return const SupportScreen();
+          case 4:
+          default:
+            return const ProfileScreen();
+        }
       }
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Госуслуги'),
+        title: Text(isEmployee ? 'Госуслуги (Сотрудник)' : 'Госуслуги'),
         centerTitle: true,
         actions: [
+          if (isEmployee)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Chip(
+                label: const Text('Сотрудник'),
+                backgroundColor: Colors.blue[100],
+              ),
+            ),
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
@@ -189,6 +237,7 @@ class _HomeScaffoldState extends State<HomeScaffold> {
             _currentIndex = index;
           });
         },
+        isEmployee: isEmployee,
       ),
     );
   }

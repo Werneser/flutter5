@@ -12,6 +12,10 @@ class AppointmentRemoteDataSource {
     return await _authRemoteDataSource.getCurrentUserLogin();
   }
 
+  Future<String?> _getToken() async {
+    return await _authRemoteDataSource.getToken();
+  }
+
   Future<List<Appointment>> getAppointmentsByStatus(AppointmentStatus? status) async {
     final login = await _getCurrentUserLogin();
     if (login == null) {
@@ -19,8 +23,14 @@ class AppointmentRemoteDataSource {
     }
 
     try {
+      final token = await _getToken();
       final response = await _dio.get(
         '/appointments/user/$login',
+        options: Options(
+          headers: {
+            'Authorization': token ?? '',
+          },
+        ),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
@@ -33,14 +43,47 @@ class AppointmentRemoteDataSource {
     }
   }
 
+  Future<List<Appointment>> getAllAppointments() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('No auth token found');
+      }
+
+      final response = await _dio.get(
+        '/appointments/all',
+        options: Options(
+          headers: {
+            'Authorization': token,
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => Appointment.fromJson(json)).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      throw Exception('Failed to load all appointments: $e');
+    }
+  }
+
   Future<void> updateAppointmentStatus({
     required String appointmentId,
     required AppointmentStatus status,
   }) async {
     try {
+      final token = await _getToken();
       await _dio.patch(
         '/appointments/$appointmentId/status',
         queryParameters: {'status': status.index},
+        options: Options(
+          headers: {
+            'Authorization': token ?? '',
+          },
+        ),
       );
     } catch (e) {
       throw Exception('Failed to update appointment status: $e');
@@ -49,6 +92,7 @@ class AppointmentRemoteDataSource {
 
   Future<void> addAppointment(Appointment appointment) async {
     try {
+      final token = await _getToken();
       final response = await _dio.post(
         '/appointments',
         data: {
@@ -62,6 +106,11 @@ class AppointmentRemoteDataSource {
           },
           'formData': appointment.formData,
         },
+        options: Options(
+          headers: {
+            'Authorization': token ?? '',
+          },
+        ),
       );
       if (response.statusCode != 201) {
         throw Exception('Failed to create appointment: ${response.data}');

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter5/data/datasources/Remote/service_remote_datasource.dart';
+import 'package:flutter5/data/datasources/Remote/profile_remote_datasource.dart';
+import 'package:flutter5/domain/models/userProfile.dart';
 import 'package:get_it/get_it.dart';
 import '../../../../domain/models/service.dart';
 
@@ -17,6 +19,8 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
   final Map<String, TextEditingController> _controllers = {};
   Service? _service;
   final ServiceRemoteDataSource serviceRemoteDataSource;
+  UserProfile? _userProfile;
+  bool _isLoadingProfile = true;
 
   _ServiceFormScreenState(this.serviceRemoteDataSource);
 
@@ -29,15 +33,74 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
   ];
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      final profileRemoteDataSource = GetIt.I<ProfileRemoteDataSource>();
+      final profile = await profileRemoteDataSource.getProfile();
+
+      if (mounted) {
+        setState(() {
+          _userProfile = profile;
+          _isLoadingProfile = false;
+        });
+
+        // После загрузки профиля инициализируем контроллеры
+        _initializeControllers();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoadingProfile = false;
+        });
+        _initializeControllers();
+      }
+    }
+  }
+
+  void _initializeControllers() {
     _service ??= widget.service;
     final fields = [
       ..._baseFields,
       ...(_service?.requiredFields ?? const []),
     ];
+
     for (final f in fields) {
-      _controllers.putIfAbsent(f, () => TextEditingController());
+      if (!_controllers.containsKey(f)) {
+        _controllers[f] = TextEditingController();
+      }
+    }
+
+    // Подставляем данные из профиля
+    _fillProfileData();
+  }
+
+  void _fillProfileData() {
+    if (_userProfile == null) return;
+
+    // Подставляем данные в соответствующие поля
+    if (_controllers.containsKey('ФИО') && _userProfile!.fullName?.isNotEmpty == true) {
+      _controllers['ФИО']!.text = _userProfile!.fullName!;
+    }
+
+    if (_controllers.containsKey('Паспорт (серия и номер)') && _userProfile!.passport?.isNotEmpty == true) {
+      _controllers['Паспорт (серия и номер)']!.text = _userProfile!.passport!;
+    }
+
+    if (_controllers.containsKey('СНИЛС') && _userProfile!.snils?.isNotEmpty == true) {
+      _controllers['СНИЛС']!.text = _userProfile!.snils!;
+    }
+
+    if (_controllers.containsKey('Телефон') && _userProfile!.phone?.isNotEmpty == true) {
+      _controllers['Телефон']!.text = _userProfile!.phone!;
+    }
+
+    if (_controllers.containsKey('E-mail') && _userProfile!.email?.isNotEmpty == true) {
+      _controllers['E-mail']!.text = _userProfile!.email!;
     }
   }
 
@@ -72,6 +135,15 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
     if (service == null) {
       return const Scaffold(
         body: Center(child: Text('Услуга не найдена')),
+      );
+    }
+
+    if (_isLoadingProfile) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(service.title),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -110,7 +182,13 @@ class _ServiceFormScreenState extends State<ServiceFormScreen> {
               return TextFormField(
                 controller: controller,
                 keyboardType: type,
-                decoration: InputDecoration(labelText: field),
+                decoration: InputDecoration(
+                  labelText: field,
+                  // Показываем иконку, если поле заполнено из профиля
+                  suffixIcon: controller.text.isNotEmpty && _userProfile != null
+                      ? const Icon(Icons.check_circle, color: Colors.green, size: 20)
+                      : null,
+                ),
                 validator: (v) =>
                 (v == null || v.trim().isEmpty) ? 'Заполните поле' : null,
               );

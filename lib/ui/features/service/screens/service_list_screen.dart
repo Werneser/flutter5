@@ -20,9 +20,6 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
 
   _ServiceListScreenState(this.serviceRemoteDataSource);
 
-  void _goToUserServiceList() {
-    GoRouter.of(context).go('/userServiceList');
-  }
 
   Future<void> _openSearchPage() async {
     final result = await GoRouter.of(context).push<String>(
@@ -47,11 +44,6 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             icon: const Icon(Icons.search),
             onPressed: _openSearchPage,
           ),
-          IconButton(
-            tooltip: 'Мои заявки',
-            icon: const Icon(Icons.list_alt),
-            onPressed: _goToUserServiceList,
-          ),
         ],
       ),
       body: Column(
@@ -70,17 +62,6 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
               onTap: (service) {
                 GoRouter.of(context).push('/serviceForm', extra: service);
               },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _goToUserServiceList,
-                icon: const Icon(Icons.list_alt),
-                label: const Text('Перейти к вашим заявкам'),
-              ),
             ),
           ),
         ],

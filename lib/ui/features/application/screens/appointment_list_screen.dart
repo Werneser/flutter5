@@ -18,10 +18,6 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
 
   _UserServiceListScreenState(this.userServiceRemoteDataSource);
 
-  void _goToProfile() {
-    GoRouter.of(context).go('/profile');
-  }
-
   void _openStatusChangeFor(Appointment service) {
     GoRouter.of(context).push<AppointmentStatus?>('/statusChange', extra: service).then((result) {
       if (result != null) {
@@ -38,14 +34,6 @@ class _UserServiceListScreenState extends State<UserServiceListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Мои заявки'),
-        actions: [
-          IconButton(
-            tooltip: 'Профиль',
-            icon: const Icon(Icons.person),
-            onPressed: _goToProfile,
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),

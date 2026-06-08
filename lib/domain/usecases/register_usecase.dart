@@ -5,7 +5,19 @@ class RegisterUseCase {
 
   RegisterUseCase(this.authRemoteDataSource);
 
-  Future<void> execute(String name, String login, String password, String phoneNumber) async {
-    await authRemoteDataSource.registerUser(name, login, password, phoneNumber);
+  Future<void> execute(
+      String name,
+      String login,
+      String password,
+      String phoneNumber, {
+        int role = 0,
+      }) async {
+    await authRemoteDataSource.registerUser(
+      name,
+      login,
+      password,
+      phoneNumber,
+      role: role,
+    );
   }
 }

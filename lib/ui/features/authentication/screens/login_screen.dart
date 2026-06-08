@@ -68,11 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    final token = await loginUseCase.execute(
+                    final result = await loginUseCase.execute(
                       _loginController.text,
                       _passwordController.text,
                     );
-                    if (token != null) {
+                    if (result != null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Вы успешно вошли!')),
                       );

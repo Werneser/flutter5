@@ -6,15 +6,17 @@ class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
 
   @override
-  State<SupportScreen> createState() => _SupportScreenState(GetIt.I<SupportRemoteDataSource>());
+  State<SupportScreen> createState() => _SupportScreenState();
 }
 
 class _SupportScreenState extends State<SupportScreen> {
-  final SupportRemoteDataSource supportRemoteDataSource;
-
-  _SupportScreenState(this.supportRemoteDataSource);
+  late final SupportRemoteDataSource supportRemoteDataSource;
 
   final TextEditingController _messageController = TextEditingController();
+
+  _SupportScreenState() {
+    supportRemoteDataSource = GetIt.I<SupportRemoteDataSource>();
+  }
 
   void _sendMessage() {
     if (_messageController.text.isNotEmpty) {
@@ -31,18 +33,47 @@ class _SupportScreenState extends State<SupportScreen> {
 
     return DefaultTabController(
       length: 2,
+      initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Техническая поддержка'),
+          backgroundColor: Theme.of(context).primaryColor,
           bottom: const TabBar(
             tabs: [
-              Tab(text: 'Чат'),
               Tab(text: 'FAQ'),
+              Tab(text: 'Чат'),
             ],
+            labelColor: Colors.white,      // Цвет активной вкладки
+            unselectedLabelColor: Colors.white70, // Цвет неактивной вкладки (с прозрачностью)
+            indicatorColor: Colors.white,  // Цвет индикатора (полоски снизу)
+            indicatorWeight: 3.0,          // Толщина индикатора
           ),
         ),
         body: TabBarView(
           children: [
+            // FAQ
+            ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: faq.length,
+              itemBuilder: (context, index) {
+                final item = faq[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: ExpansionTile(
+                    title: Text(
+                      item['question']!,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(item['answer']!),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
             // Чат
             Column(
               children: [
@@ -83,37 +114,20 @@ class _SupportScreenState extends State<SupportScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
+                            filled: true,
+                            fillColor: Colors.white,
                           ),
                         ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.send),
                         onPressed: _sendMessage,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ],
                   ),
                 ),
               ],
-            ),
-            // FAQ
-            ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: faq.length,
-              itemBuilder: (context, index) {
-                final item = faq[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: ExpansionTile(
-                    title: Text(item['question']!),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(item['answer']!),
-                      ),
-                    ],
-                  ),
-                );
-              },
             ),
           ],
         ),

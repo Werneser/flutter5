@@ -1,5 +1,9 @@
+// flutter5/data/datasources/Remote/auth_remote_datasource.dart
+
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../../domain/models/user.dart';
 
 class AuthRemoteDataSource {
   final Dio _dio;
@@ -7,7 +11,13 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource(this._dio, this._storage);
 
-  Future<void> registerUser(String name, String login, String password, String phoneNumber) async {
+  Future<void> registerUser(
+      String name,
+      String login,
+      String password,
+      String phoneNumber, {
+        int role = 0,
+      }) async {
     try {
       final response = await _dio.post(
         '/register',
@@ -16,6 +26,7 @@ class AuthRemoteDataSource {
           'login': login,
           'password': password,
           'phoneNumber': phoneNumber,
+          'role': role,
         },
       );
       if (response.statusCode != 201) {
@@ -26,8 +37,13 @@ class AuthRemoteDataSource {
     }
   }
 
-  Future<String?> loginUser(String login, String password) async {
+  Future<String?> getToken() async {
+    return await _storage.read(key: 'auth_token');
+  }
+
+  Future<Map<String, dynamic>?> loginUser(String login, String password) async {
     try {
+      print('Attempting login for user: $login');
       final response = await _dio.post(
         '/login',
         data: {
@@ -35,14 +51,29 @@ class AuthRemoteDataSource {
           'password': password,
         },
       );
+
+      print('Login response: ${response.statusCode} - ${response.data}');
+
       if (response.statusCode == 200) {
         final token = response.data['token'];
-        await _storage.write(key: 'current_user_login', value: login);
-        return token;
-      } else {
-        return null;
+        final role = response.data['role'] ?? UserRole.user.index;
+
+        if (token != null) {
+          await _storage.write(key: 'auth_token', value: token);
+          await _storage.write(key: 'current_user_login', value: login);
+          await _storage.write(key: 'user_role', value: role.toString());
+          print('Token saved successfully: $token');
+          print('Role saved: $role');
+
+          return {
+            'token': token,
+            'role': role,
+          };
+        }
       }
+      return null;
     } catch (e) {
+      print('Login error: $e');
       throw Exception('Login error: $e');
     }
   }
@@ -51,7 +82,24 @@ class AuthRemoteDataSource {
     return await _storage.read(key: 'current_user_login');
   }
 
-  Future<void> logout() async {
-    await _storage.delete(key: 'current_user_login');
+  Future<UserRole> getUserRole() async {
+    final roleStr = await _storage.read(key: 'user_role');
+    if (roleStr != null) {
+      final roleIndex = int.tryParse(roleStr) ?? 0;
+      return UserRole.values[roleIndex];
+    }
+    return UserRole.user;
   }
+
+  Future<bool> isEmployee() async {
+    final role = await getUserRole();
+    return role == UserRole.employee;
+  }
+
+  Future<void> logout() async {
+    await _storage.delete(key: 'auth_token');
+    await _storage.delete(key: 'current_user_login');
+    await _storage.delete(key: 'user_role');
+  }
+
 }
